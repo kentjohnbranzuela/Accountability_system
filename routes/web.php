@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Auth;
 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login'); // Redirect to login after logout
+    return redirect('/login');
 })->name('logout');
 
+// Main page (Data Entry + List of Records)
+Route::get('/accountability', [AccountabilityRecordsController::class, 'index'])->name('accountability.index');
+Route::get('/accountability-records', [AccountabilityRecordsController::class, 'accountability_records'])
+    ->name('accountability.accountability_records');
 
-// Remove the conflicting Route::get('/warehouse') function
-
-// Resource route (handles all CRUD operations)
-
-// Explicit individual routes for clarity (optional, since resource already includes them)
-Route::get('/accountability', [AccountabilityRecordsController::class, 'accountability_records'])->name('accountability.accountability_records');
+// Store new record
 Route::post('/accountability', [AccountabilityRecordsController::class, 'store'])->name('accountability.store');
+
+// Edit and Update
 Route::get('/accountability/{id}/edit', [AccountabilityRecordsController::class, 'edit'])->name('accountability.edit');
 Route::put('/accountability/{id}', [AccountabilityRecordsController::class, 'update'])->name('accountability.update');
+
+// Delete
 Route::delete('/accountability/{id}', [AccountabilityRecordsController::class, 'destroy'])->name('accountability.destroy');
-
-
-

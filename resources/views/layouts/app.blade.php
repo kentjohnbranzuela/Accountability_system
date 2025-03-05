@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BLACKLINE</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('2.jpg') }}">
+ <!-- Change filename if needed -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         /* Sidebar Styles */
         body {
             display: flex;
         }
+
 
                 body {
             display: flex;
@@ -71,6 +74,16 @@
             background: linear-gradient(90deg, #25016d, rgb(44, 48, 47)); /* Blue gradient */
             border-bottom: 2px solid #ffffff;
         }
+        .sticky-navbar-brand {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to right, #2e0052, #1a1a1a); /* Adjust to match your design */
+    z-index: 1000;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow */
+}
 
         /* Add Borders for Dashboard and BRO LIST */
         .nav-item a {
@@ -95,9 +108,11 @@
             background: linear-gradient(90deg, #25016d,rgb(44, 48, 47)); /* Blue gradient */
             border-bottom: 2px solid #ffffff;
         }
+
     </style>
 </head>
 <body>
+
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -112,18 +127,21 @@
             </li>
 
           <li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle">
-        <i class="fas fa-folder"></i> BRO LIST
-    </a>
-    <ul class="collapse list-unstyled" id="accountabilityMenu">
-        <li>
-            <a href="{{ route('accountability.accountability_records') }}" class="nav-link">Accountability Records</a>
-        </li>
-        <li>
-            <a href="#" class="nav-link">Data Entry</a>
-        </li>
-    </ul>
+    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#accountabilityMenu">
+    <i class="fas fa-folder"></i> BRO LIST
+</a>
+<ul class="collapse list-unstyled" id="accountabilityMenu">
+    <li>
+        <a href="{{ route('accountability.accountability_records') }}" class="nav-link">Accountability Records</a>
+    </li>
+    <li>
+    <a href="{{ url('/accountability') }}" class="nav-link">Data Entry</a>
+
+
 </li>
+
+</ul>
+
 
         </ul>
     </div>
@@ -168,7 +186,9 @@
                 </div>
             </div>
         </nav>
-
+        <footer class="text-center py-3 text-muted">
+    © 2025 Converge. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a> | <a href="#">Site Map</a>
+</footer>
         <!-- Success Message -->
         <div class="container mt-4">
             @if(session('success'))

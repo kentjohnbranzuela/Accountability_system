@@ -5,7 +5,6 @@
     <h2 class="text-primary">Edit Accountability Record</h2>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="card p-3 shadow-sm">
