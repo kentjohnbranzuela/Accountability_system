@@ -15,7 +15,7 @@ Route::post('/logout', function () {
 // Resource route (handles all CRUD operations)
 
 // Explicit individual routes for clarity (optional, since resource already includes them)
-Route::get('/accountability', [AccountabilityRecordsController::class, 'index'])->name('accountability.index');
+Route::get('/accountability', [AccountabilityRecordsController::class, 'accountability_records'])->name('accountability.accountability_records');
 Route::post('/accountability', [AccountabilityRecordsController::class, 'store'])->name('accountability.store');
 Route::get('/accountability/{id}/edit', [AccountabilityRecordsController::class, 'edit'])->name('accountability.edit');
 Route::put('/accountability/{id}', [AccountabilityRecordsController::class, 'update'])->name('accountability.update');

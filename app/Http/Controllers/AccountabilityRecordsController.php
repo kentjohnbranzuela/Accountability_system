@@ -7,7 +7,8 @@ use App\Models\AccountabilityRecord;
 
 class AccountabilityRecordsController extends Controller
 {
-    public function index(Request $request)
+
+    public function accountability_records(Request $request)
     {
         // Fetch all records with search functionality
         $query = AccountabilityRecord::query();
@@ -23,8 +24,9 @@ class AccountabilityRecordsController extends Controller
 
         $records = $query->get();
 
-        return view('accountability.index', compact('records'));
+        return view('accountability.accountability_records', compact('records'));
     }
+
 
     public function store(Request $request)
 {
@@ -77,4 +79,5 @@ class AccountabilityRecordsController extends Controller
 
         return redirect()->route('accountability.index')->with('success', 'Record deleted successfully!');
     }
+
 }
