@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AccountabilityRecord;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\AccountabilityImport;
 
 class AccountabilityRecordsController extends Controller
 {
@@ -35,7 +37,7 @@ class AccountabilityRecordsController extends Controller
         }
 
         // Paginate results (adjust the number if needed)
-        $records = $query->paginate(5);
+        $records = $query->paginate(19);
 
         return view('accountability.accountability_records', compact('records'));
     }
@@ -90,5 +92,17 @@ class AccountabilityRecordsController extends Controller
         $record->delete();
 
         return redirect()->route('accountability.accountability_records')->with('success', 'Record deleted successfully!');
+    }
+    public function importExcel(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        // Import the file
+        Excel::import(new AccountabilityImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data Imported Successfully!');
     }
 }

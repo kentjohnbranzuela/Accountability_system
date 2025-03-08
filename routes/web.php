@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountabilityRecordsController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/logout', function () {
@@ -23,3 +24,9 @@ Route::put('/accountability/{id}', [AccountabilityRecordsController::class, 'upd
 
 // Delete
 Route::delete('/accountability/{id}', [AccountabilityRecordsController::class, 'destroy'])->name('accountability.destroy');
+
+//Dashboard
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+//import
+Route::post('/import-excel', [AccountabilityRecordsController::class, 'importExcel'])->name('accountability.import');

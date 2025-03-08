@@ -121,7 +121,7 @@
         </a>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('dashboard') }}" class="nav-link">
                     <i  class="fas fa-table"></i> Dashboard
                 </a>
             </li>
