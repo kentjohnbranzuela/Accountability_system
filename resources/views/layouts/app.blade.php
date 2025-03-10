@@ -108,6 +108,16 @@
             background: linear-gradient(90deg, #25016d,rgb(44, 48, 47)); /* Blue gradient */
             border-bottom: 2px solid #ffffff;
         }
+        #accountabilityMenu {
+    display: none;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-in-out;
+}
+#accountabilityMenu.show {
+    display: block;
+    max-height: 500px; /* Adjust if needed */
+}
 
     </style>
 </head>
@@ -127,7 +137,7 @@
             </li>
 
           <li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#accountabilityMenu">
+          <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
     <i class="fas fa-folder"></i> BRO LIST
 </a>
 <ul class="collapse list-unstyled" id="accountabilityMenu">
@@ -146,20 +156,33 @@
         </ul>
     </div>
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let dropdownToggle = document.querySelector('.nav-link.dropdown-toggle');
-        let dropdownMenu = document.querySelector("#accountabilityMenu");
+   document.addEventListener("DOMContentLoaded", function () {
+    let dropdownToggle = document.getElementById('broListToggle');
+    let dropdownMenu = document.getElementById("accountabilityMenu");
 
-        dropdownToggle.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent default link behavior
+    dropdownToggle.addEventListener("click", function (event) {
+        event.preventDefault();
 
-            if (dropdownMenu.classList.contains("show")) {
-                dropdownMenu.classList.remove("show"); // Close dropdown
-            } else {
-                dropdownMenu.classList.add("show"); // Open dropdown
-            }
-        });
+        if (dropdownMenu.classList.contains("show")) {
+            dropdownMenu.style.maxHeight = "0";
+            setTimeout(() => dropdownMenu.classList.remove("show"), 300);
+        } else {
+            dropdownMenu.classList.add("show");
+            dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
+        }
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.style.maxHeight = "0";
+            setTimeout(() => dropdownMenu.classList.remove("show"), 300);
+        }
+    });
+});
+
+
+
 </script>
 
 
@@ -171,21 +194,27 @@
     <div class="content" id="content">
         <!-- Navbar -->
         <nav class="navbar navbar-dark custom-navbar">
-            <div class="container-fluid">
-                <a class="navbar-brand">BLACKLINE</a>
+    <div class="container-fluid">
+        <a class="navbar-brand">BLACKLINE</a>
 
-                <!-- Dropdown Menu for Account -->
-                <div class="dropdown ms-auto">
-                    <button class="navbar-toggler" type="button" id="userMenuButton" data-bs-toggle="dropdown">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <ul class="dropdown-menu navbar-dark dropdown-menu-end" aria-labelledby="userMenuButton">
-                        <li><a class="dropdown-item" href="#">Account Information</a></li>
-                        <li><a class="dropdown-item text-danger" href="{{ route('logout') }}">Log Out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <!-- Dropdown Menu for Account -->
+        <div class="dropdown ms-auto">
+            <button class="navbar-toggler" type="button" id="userMenuButton" data-bs-toggle="dropdown">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <ul class="dropdown-menu navbar-dark dropdown-menu-end" aria-labelledby="userMenuButton">
+                <li><a class="dropdown-item" href="{{ route('account.info') }}">Account Information</a></li>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item text-danger">Log Out</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
         <footer class="text-center py-3 text-muted">
     © 2025 Converge. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a> | <a href="#">Site Map</a>
 </footer>
@@ -215,6 +244,10 @@
             content.classList.add('expanded');
         });
     </script>
-
+<script>
+    setTimeout(function() {
+        document.querySelector('.alert-success')?.remove();
+    }, 3000); // Message disappears after 3 seconds
+</script>
 </body>
 </html>

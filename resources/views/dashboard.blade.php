@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <!-- Accountability Dashboard Section -->
     <div class="card shadow-lg p-4 border-0 rounded-4 mb-4">
-        <h2 class="mb-4 text-center text-primary fw-bold">📊 Accountability Dashboard</h2>
+        <h2 class="mb-4 text-center text-primary fw-bold">📊 Assest Dashboard</h2>
 
         <!-- Yearly Filter (Hidden in Print) -->
         <form method="GET" action="{{ route('dashboard') }}" class="mb-3 text-center filter-container">
