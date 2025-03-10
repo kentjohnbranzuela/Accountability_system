@@ -11,17 +11,19 @@ use Carbon\Carbon;
 class AccountabilityImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
-    {
-        return new AccountabilityRecord([
-            'id_number'   => $row['id_number'] ?? null,  
-            'name'        => $row['name'] ?? 'Unknown',
-            'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(), // Default to today if null
-            'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
-            'description' => $row['description'] ?? null,
-            'ser_no'      => !empty($row['serial_no']) ? $row['serial_no'] : 'N/A', 
-            'status'      => $row['status'] ?? 'Unknown', 
-        ]);
-    }
+{
+    
+
+    return new AccountabilityRecord([
+        'id_number'   => $row['id_number'] ?? null,  
+        'name'        => $row['name'] ?? 'Unknown',
+        'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(),
+        'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
+        'description'  => empty($row['description']) ? null : $row['description'], // Allow null // Allow NULL
+       'ser_no' => empty($row['serial_no']) || $row['serial_no'] === 'N/A' ? null : $row['serial_no'],
+        'status'      => $row['status'] ?? 'Unknown', 
+    ]);
+}
 
     /**
      * Convert Excel serial number or text date to a valid MySQL date format.

@@ -3,12 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountabilityRecordsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Support\Facades\Auth;
 
 // Public Routes
 
+Route::get('/', function () {
+    return redirect()->route('dashboard'); // Redirect to dashboard if logged in
+});
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -29,6 +33,11 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::get('/account-info', [AuthController::class, 'accountInfo'])->name('account.info');
 Route::post('/account-update', [AuthController::class, 'updateAccount'])->name('account.update');
 Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('update.password');
+
+Route::get('/technician/records', [TechnicianController::class, 'records'])->name('technician.records');
+Route::get('/technician/create', [TechnicianController::class, 'create'])->name('technician.create');
+Route::post('/technician/store', [TechnicianController::class, 'store'])->name('technician.store');
+Route::resource('technician', TechnicianController::class);
 });
     // Accountability Routes
    
@@ -36,3 +45,6 @@ Route::post('/update-password', [AuthController::class, 'updatePassword'])->name
 
     // Import Route
     Route::post('/import-excel', [AccountabilityRecordsController::class, 'importExcel'])->name('accountability.import');
+
+   
+

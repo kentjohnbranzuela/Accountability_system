@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLACKLINE</title>
+    <title>Blackline</title>
     <link rel="icon" type="image/jpeg" href="{{ asset('2.jpg') }}">
  <!-- Change filename if needed -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -108,6 +108,7 @@
             background: linear-gradient(90deg, #25016d,rgb(44, 48, 47)); /* Blue gradient */
             border-bottom: 2px solid #ffffff;
         }
+        
         #accountabilityMenu {
     display: none;
     overflow: hidden;
@@ -136,53 +137,65 @@
                 </a>
             </li>
 
-          <li class="nav-item">
-          <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
-    <i class="fas fa-folder"></i> BRO LIST
-</a>
-<ul class="collapse list-unstyled" id="accountabilityMenu">
-    <li>
-        <a href="{{ route('accountability.accountability_records') }}" class="nav-link">Accountability Records</a>
-    </li>
-    <li>
-    <a href="{{ url('/accountability') }}" class="nav-link">Data Entry</a>
-
-
+            <li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
+        <i class="fas fa-folder"></i> BRO LIST
+    </a>
+    <ul class="collapse list-unstyled" id="broListMenu">
+        <li>
+            <a href="{{ route('accountability.accountability_records') }}" class="nav-link">BRO Records</a>
+        </li>
+        <li>
+            <a href="{{ url('/accountability') }}" class="nav-link">Add Records</a>
+        </li>
+    </ul>
 </li>
 
-</ul>
-
-
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
+        <i class="fas fa-folder"></i> TECH LIST
+    </a>
+    <ul class="collapse list-unstyled" id="techListMenu">
+        <li>
+        <a href="{{ route('technician.records') }}" class="nav-link">TECH Records</a>
+        </li>
+        <li>
+            <a href="{{ route('technician.create') }}" class="nav-link">ADD Records</a>
+        </li>
+    </ul>
+</li>
         </ul>
     </div>
     <script>
-   document.addEventListener("DOMContentLoaded", function () {
-    let dropdownToggle = document.getElementById('broListToggle');
-    let dropdownMenu = document.getElementById("accountabilityMenu");
+document.addEventListener("DOMContentLoaded", function () {
+    function setupDropdown(toggleId, menuId) {
+        let dropdownToggle = document.getElementById(toggleId);
+        let dropdownMenu = document.getElementById(menuId);
 
-    dropdownToggle.addEventListener("click", function (event) {
-        event.preventDefault();
+        dropdownToggle.addEventListener("click", function (event) {
+            event.preventDefault();
 
-        if (dropdownMenu.classList.contains("show")) {
-            dropdownMenu.style.maxHeight = "0";
-            setTimeout(() => dropdownMenu.classList.remove("show"), 300);
-        } else {
-            dropdownMenu.classList.add("show");
-            dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
-        }
-    });
+            if (dropdownMenu.classList.contains("show")) {
+                dropdownMenu.classList.remove("show");
+                dropdownMenu.style.maxHeight = "0";
+            } else {
+                dropdownMenu.classList.add("show");
+                dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
+            }
+        });
 
-    // Close dropdown when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
-            dropdownMenu.style.maxHeight = "0";
-            setTimeout(() => dropdownMenu.classList.remove("show"), 300);
-        }
-    });
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove("show");
+                dropdownMenu.style.maxHeight = "0";
+            }
+        });
+    }
+
+    setupDropdown("broListToggle", "broListMenu");
+    setupDropdown("techListToggle", "techListMenu");
 });
-
-
-
 </script>
 
 

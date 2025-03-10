@@ -53,6 +53,10 @@
         font-size: 14px;
         color: #555;
     }
+    .duplicate {
+    color: red;
+    font-weight: bold;
+}
 </style>
 
 <script>
@@ -94,37 +98,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($records as $record)
-                        <tr class="align-middle text-center">
-                            <td>{{ $record->id_number }}</td>
-                            <td>{{ $record->name }}</td>
-                            <td>{{ $record->date ?? 'N/A' }}</td>
-                            <td>{{ $record->quantity }}</td>
-                            <td>{{ $record->description }}</td>
-                            <td>{{ $record->ser_no }}</td>
-                            <td>
-                                <span class="badge 
-                                    {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
-                                    {{ $record->status }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{{ route('accountability.edit', $record->id) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <form action="{{ route('accountability.destroy', $record->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
+    @foreach ($records as $record)
+        @php
+            // Count how many times this serial number appears in the database
+            $isDuplicate = \App\Models\AccountabilityRecord::where('ser_no', $record->ser_no)->count() > 1;
+        @endphp
+
+        <tr class="align-middle text-center">
+            <td>{{ $record->id_number }}</td>
+            <td>{{ $record->name }}</td>
+            <td>{{ $record->date ?? 'N/A' }}</td>
+            <td>{{ $record->quantity }}</td>
+            <td>{{ $record->description }}</td>
+
+            <!-- Highlight Serial Number in Red if Duplicate -->
+            <td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
+                {{ $record->ser_no ?? 'N/A' }}
+            </td>
+
+            <td>
+                <span class="badge 
+                    {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
+                    {{ $record->status }}
+                </span>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a href="{{ route('accountability.edit', $record->id) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form action="{{ route('accountability.destroy', $record->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
             </table>
         </div>
 
@@ -164,6 +178,14 @@
                     <td style="border: 1px solid black; padding: 5px;">{{ $record->ser_no }}</td>
                     <td style="border: 1px solid black; padding: 5px;">{{ $record->status }}</td>
                 </tr>
+                @php
+    // Count how many times this serial number appears
+    $isDuplicate = \App\Models\AccountabilityRecord::where('ser_no', $record->ser_no)->count() > 1;
+@endphp
+
+<td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
+    {{ $record->ser_no ?? 'N/A' }}
+</td>
             @endforeach
         </tbody>
     </table>
@@ -200,6 +222,5 @@
         printWindow.print();
     }
 </script>
-
 
 @endsection

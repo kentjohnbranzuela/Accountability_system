@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->date('date');
             $table->integer('quantity');
             $table->text('description');
-            $table->string('ser_no')->unique();
+            $table->string('ser_no')->nullable();
             $table->string('status');
             $table->timestamps();
         });
