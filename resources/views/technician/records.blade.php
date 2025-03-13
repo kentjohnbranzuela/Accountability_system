@@ -13,7 +13,7 @@
     </label>
     <span id="file-name">No file chosen</span>
     <button type="submit" class="import-btn">
-        ✅ <strong>Import Excel</strong>
+    📥 <strong>Import Excel</strong>
     </button>
 </form>
 
@@ -105,12 +105,35 @@
         font-size: 14px;
         color: #555;
     }
+    #Delete{
+    margin-top: 5px; /* Space between search and delete button */
+    margin-left: 960px;
+        text-align: left;
+    background-color:  #007bff;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+#Delete:hover{
+    background-color:rgba(24, 89, 159, 0.88);
+    transition: background-color 0.2s ease;
+    color: white;
+    cursor: pointer;
+}
 </style>
     </div>
 
     {{-- Print Button --}}
     <button onclick="printTable()" class="btn btn-primary mb-3">🖨️ Print Table</button>
-
+    <a href="{{ route('export.technicians') }}" id="exportexcel" class="btn btn-primary mb-3">📤 Export to Excel</a>
+    <div class="mt-2 text-center">
+    <form id="deleteForm" action="{{ route('technician.deleteAll') }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="button" id="Delete" class="btn btn-danger">Delete All</button>
+    </form>
+</div>
+</div>
     {{-- Technician Records Table --}}
     <div class="card shadow-sm">
         <div class="card-body">
@@ -129,6 +152,7 @@
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     </thead>
                     <tbody>
                         @foreach ($technicians as $technician)
@@ -152,14 +176,14 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
-                                        <a href="{{ route('technician.edit', $technician->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                            @csrf
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-sm btn-warning EditTechnician" data-id="{{ $technician->id }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>              
+                                        <form action="{{ route('technician.destroy', $technician->id) }}" id="deleteForm1" method="POST">
+                                      @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
+                                            <button type="button" id="Delete1" class="btn btn-sm btn-danger">
                                                 <i class="fas fa-trash-alt"></i> Delete
                                             </button>
                                         </form>
@@ -189,6 +213,7 @@
 
         <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
             <thead>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <tr>
                     <th style="border: 1px solid black; padding: 5px;">Date</th>
                     <th style="border: 1px solid black; padding: 5px;">Quantity</th>
@@ -247,5 +272,159 @@
         printWindow.document.close();
         printWindow.print();
     }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let deleteButton = document.getElementById("Delete");
+
+    if (deleteButton) {
+        deleteButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent auto-submission
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This will delete all records permanently!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ✅ Submit the form
+                    document.getElementById("deleteForm").submit();
+
+                    // ✅ Show success alert after deletion
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "All records have been deleted successfully.",
+                        icon: "success",
+                        timer: 2000, // Auto-close after 2 seconds
+                        showConfirmButton: false
+                    });
+                }
+            });
+        });
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let importButton = document.querySelector(".import-btn");
+
+    if (importButton) {
+        importButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent auto-submit
+
+            Swal.fire({
+                title: "Import Excel?",
+                text: "Are you sure you want to import this file?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Import it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ✅ Show success alert
+                    Swal.fire({
+                        title: "Importing...",
+                        text: "Your file is being processed.",
+                        icon: "success",
+                        timer: 2000, // Auto-close after 2 seconds
+                        showConfirmButton: false
+                    });
+
+                    // ✅ Submit the form
+                    importButton.closest("form").submit();
+                }
+            });
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    let exportButton = document.querySelector("#exportexcel");
+
+    if (exportButton) {
+        exportButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent immediate navigation
+
+            Swal.fire({
+                title: "Export Data?",
+                text: "Do you want to download the Excel file?",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#007bff",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Export it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ✅ Show success alert
+                    Swal.fire({
+                        title: "Exporting...",
+                        text: "Your Excel file is being prepared.",
+                        icon: "success",
+                        timer: 1500, // Auto-close after 1.5 seconds
+                        showConfirmButton: false
+                    });
+
+                    // ✅ Redirect after the success alert
+                    setTimeout(() => {
+                        window.location.href = exportButton.href; // Proceed with export
+                    }, 1500);
+                }
+            });
+        });
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let deleteButton = document.getElementById("Delete1");
+
+    if (deleteButton) {
+        deleteButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This record will be permanently deleted!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("deleteForm1").submit(); // Manually submit form if confirmed
+                }
+            });
+        });
+    } else {
+        console.error("Delete button not found! Check your HTML ID.");
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let editButtons = document.querySelectorAll(".EditTechnician"); // Select all Edit buttons
+
+    editButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default click action
+
+            let technicianId = this.getAttribute("data-id"); // Get technician ID from data attribute
+
+            Swal.fire({
+                title: "Proceed to Edit?",
+                text: "Are you sure you want to edit this record?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#ffc107",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Edit it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/technician/${technicianId}/edit`; // Redirect if confirmed
+                }
+            });
+        });
+    });
+});
 </script>
 @endsection

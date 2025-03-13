@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackline</title>
     <link rel="icon" type="image/jpeg" href="{{ asset('2.jpg') }}">
@@ -296,10 +297,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <ul class="dropdown-menu navbar-dark dropdown-menu-end" aria-labelledby="userMenuButton">
                 <li><a class="dropdown-item" href="{{ route('account.info') }}">Account Information</a></li>
                 <li>
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger">Log Out</button>
-                    </form>
+                <form action="{{ route('logout') }}" method="POST" id="logoutForm">
+                    @csrf
+                    <button type="button" class="dropdown-item text-danger" id="logoutButton">Log Out</button>
+                </form>
                 </li>
             </ul>
         </div>
@@ -361,6 +362,29 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let logoutButton = document.getElementById("logoutButton");
+
+    if (logoutButton) {
+        logoutButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            Swal.fire({
+                title: "Are you sure you want to log out?",
+                text: "You will need to log in again to access your account.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Log Out"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("logoutForm").submit(); // Submit the form if confirmed
+                }
+            });
+        });
+    }
 });
 </script>
 </body>

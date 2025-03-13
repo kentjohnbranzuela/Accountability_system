@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Technician;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TechniciansExport;
 use App\Imports\TechnicianImport;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -107,5 +108,14 @@ return view('technician.records', compact('technicians', 'duplicateSerNos'));
 
         return redirect()->back()->with('success', 'Data Imported Successfully!');
     }
+    public function exportExcel()
+{
+    return Excel::download(new TechniciansExport, 'technicians.xls');
+}
+public function deleteAll()
+{
+    Technician::truncate(); // Deletes all records but keeps the table structure
+    return redirect()->back()->with('success', 'All records have been deleted successfully.');
+}
 }
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AccountabilityRecord;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AccountabilityImport;
+use App\Exports\BROExport;
 
 class AccountabilityRecordsController extends Controller
 {
@@ -105,4 +106,13 @@ class AccountabilityRecordsController extends Controller
 
         return redirect()->back()->with('success', 'Data Imported Successfully!');
     }
+    public function exportExcel()
+    {
+        return Excel::download(new BROExport, 'BRO.xls');
+    }
+    public function deleteAll()
+{
+    AccountabilityRecord::truncate(); // Deletes all records but keeps the table structure
+    return redirect()->back()->with('success', 'All records have been deleted successfully.');
+}
 }
