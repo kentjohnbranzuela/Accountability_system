@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h2 class="text-primary">Accountability Records</h2>
+        <h2 class="text-primary">BRO Records</h2>
         <form action="{{ route('accountability.import') }}" method="POST" enctype="multipart/form-data" class="import-container">
     @csrf
     <input type="file" name="file" id="file-upload" class="custom-file-input" required onchange="updateFileName()">
@@ -76,12 +76,12 @@
         </form>
 
         <!-- Print Button -->
-        <button onclick="printTable()" class="btn btn-primary">Print Table</button>
+        <button onclick="printTable()" class="btn btn-primary">🖨️ Print Table</button>
 
         <!-- Visible Table -->
         <div class="card shadow-sm">
     <div class="card-body">
-        <h4 class="mb-3 text-primary">Accountability Records</h4>
+        <h4 class="mb-3 text-primary">BRO Records</h4>
 
         <div class="table-responsive">
             <table id="accountabilityTable" class="table table-striped table-hover">
@@ -152,7 +152,7 @@
         <!-- Hidden Printable Receipt -->
         <div id="printableReceipt" style="display: none;">
     <h2 style="text-align: center;">Black Line Republic</h2>
-    <h3 style="text-align: center;">ACKNOWLEDGEMENT RECEIPT FOR EQUIPMENT</h3>
+    <h3 style="text-align: center;">ACKNOWLEDGEMENT RECEIPT FOR BRO EQUIPMENT</h3>
 
     <!-- Dynamically insert the first name & position (ID Number) from the records -->
     <p><strong>Name:</strong> {{ $records->first()->name ?? '___________________________' }}</p>
@@ -176,17 +176,16 @@
                     <td style="border: 1px solid black; padding: 5px;">{{ $record->quantity }}</td>
                     <td style="border: 1px solid black; padding: 5px;">{{ $record->description }}</td>
                     <td style="border: 1px solid black; padding: 5px;">{{ $record->ser_no }}</td>
-                    <td style="border: 1px solid black; padding: 5px;">{{ $record->status }}</td>
+                    <td style="border: 1px solid black; padding: 5px;">
+    {{ $record->status !== 'Unknown' ? $record->status : '' }}
+</td>
                 </tr>
                 @php
     // Count how many times this serial number appears
     $isDuplicate = \App\Models\AccountabilityRecord::where('ser_no', $record->ser_no)->count() > 1;
 @endphp
 
-<td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
-    {{ $record->ser_no ?? 'N/A' }}
-</td>
-            @endforeach
+    @endforeach
         </tbody>
     </table>
 

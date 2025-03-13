@@ -72,7 +72,7 @@
         }
         .custom-navbar {
             background: linear-gradient(90deg, #25016d, rgb(44, 48, 47)); /* Blue gradient */
-            border-bottom: 2px solid #ffffff;
+            border-bottom: 2px solidrgb(255, 255, 255);
         }
         .sticky-navbar-brand {
     position: fixed;
@@ -87,28 +87,18 @@
 
         /* Add Borders for Dashboard and BRO LIST */
         .nav-item a {
-            display: block;
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px solid rgba(255, 255, 255, 0.5); /* Subtle white border */
-            border-radius: 8px; /* Rounded corners */
-            margin-bottom: 10px; /* Space between items */
-            text-align: center;
-            transition: all 0.3s ease-in-out;
-        }
+    background: linear-gradient(135deg,rgba(227, 136, 255, 0.27),rgba(60, 0, 117, 0.39)); /* Smoother blue */
+    color: black;
+    font-weight: bold;
+    padding: 8px 5px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease-in-out;
+}
+.nav-item {
+    margin-bottom: 12px; /* Adds spacing between BRO LIST, TECH LIST, etc. */
+}
 
-        .nav-item a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: white; /* Highlight border on hover */
-        }
-
-        .custom-navbar {
-            background: linear-gradient(90deg, #25016d,rgb(44, 48, 47)); /* Blue gradient */
-            border-bottom: 2px solid #ffffff;
-        }
-        
         #accountabilityMenu {
     display: none;
     overflow: hidden;
@@ -118,6 +108,32 @@
 #accountabilityMenu.show {
     display: block;
     max-height: 500px; /* Adjust if needed */
+}
+.sidebar {
+    height: 100vh; /* Full height of the viewport */
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: hidden; /* Hides horizontal scrollbar */
+    position: fixed; /* Keeps the sidebar fixed */
+    top: 0;
+    left: 0;
+    width: 250px; /* Adjust width as needed */
+    background-color: #2c3e50; /* Example background */
+    color: white; /* Example text color */
+    padding-bottom: 20px; /* Prevents content from getting cut off */
+}
+
+/* Customize scrollbar (optional) */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
     </style>
@@ -133,40 +149,102 @@
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}" class="nav-link">
-                    <i  class="fas fa-table"></i> Dashboard
+                    <i  class="fas fa-table"></i>📈 Dashboard
                 </a>
             </li>
 
             <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
-        <i class="fas fa-folder"></i> BRO LIST
+        <i class="fas fa-folder"></i>📝 BRO LIST
     </a>
     <ul class="collapse list-unstyled" id="broListMenu">
-        <li>
-            <a href="{{ route('accountability.accountability_records') }}" class="nav-link">BRO Records</a>
-        </li>
-        <li>
-            <a href="{{ url('/accountability') }}" class="nav-link">Add Records</a>
-        </li>
+        <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link">BRO Records</a></li>
+        <li><a href="{{ url('/accountability') }}" class="nav-link">Add Records</a></li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
-        <i class="fas fa-folder"></i> TECH LIST
+        <i class="fas fa-folder"></i>🛠️ TECH LIST
     </a>
     <ul class="collapse list-unstyled" id="techListMenu">
+        <li><a href="{{ route('technician.records') }}" class="nav-link">TECH Records</a></li>
+        <li><a href="{{ route('technician.create') }}" class="nav-link">ADD Records</a></li>
+    </ul>
+</li>
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle">
+        <i class="fas fa-folder"></i>📌 BC-GINGOOG LIST
+    </a>
+    <ul class="collapse list-unstyled" id="bcGingoogMenu">
         <li>
-        <a href="{{ route('technician.records') }}" class="nav-link">TECH Records</a>
+            <a href="#" class="nav-link">GINGOOG Records</a>
         </li>
         <li>
-            <a href="{{ route('technician.create') }}" class="nav-link">ADD Records</a>
+            <a href="#" class="nav-link">Add Records</a>
         </li>
     </ul>
 </li>
-        </ul>
+
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="bcCdoToggle">
+        <i class="fas fa-folder"></i>📌 BC-CDO LIST
+    </a>
+    <ul class="collapse list-unstyled" id="bcCdoMenu">
+        <li>
+            <a href="#" class="nav-link">CDO Records</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link">Add Records</a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="turnOverToggle">
+        <i class="fas fa-folder"></i>🔄 TURN-OVER LIST
+    </a>
+    <ul class="collapse list-unstyled" id="turnOverMenu">
+        <li>
+            <a href="#" class="nav-link">T-O Records</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link">Add Records</a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="awolToggle">
+        <i class="fas fa-folder"></i>🚫 AWOL LIST
+    </a>
+    <ul class="collapse list-unstyled" id="awolMenu">
+        <li>
+            <a href="{#" class="nav-link">AWOL Records</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link">Add Records</a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item">
+    <a href="#" class="nav-link dropdown-toggle" id="resignToggle">
+        <i class="fas fa-folder"></i>❌ RESIGN LIST
+    </a>
+    <ul class="collapse list-unstyled" id="resignMenu">
+        <li>
+            <a href="#" class="nav-link">RESIGN Records</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link">Add Records</a>
+        </li>
+    </ul>
+</li>
+
     </div>
     <script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     function setupDropdown(toggleId, menuId) {
         let dropdownToggle = document.getElementById(toggleId);
@@ -174,25 +252,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
         dropdownToggle.addEventListener("click", function (event) {
             event.preventDefault();
-
+            
+            // Toggle Bootstrap's collapse class
             if (dropdownMenu.classList.contains("show")) {
                 dropdownMenu.classList.remove("show");
                 dropdownMenu.style.maxHeight = "0";
             } else {
+                // Close other open dropdowns
+                document.querySelectorAll(".list-unstyled.show").forEach(menu => {
+                    menu.classList.remove("show");
+                    menu.style.maxHeight = "0";
+                });
+
                 dropdownMenu.classList.add("show");
                 dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
             }
         });
-
-        // Close dropdown when clicking outside
-        document.addEventListener("click", function (event) {
-            if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                dropdownMenu.classList.remove("show");
-                dropdownMenu.style.maxHeight = "0";
-            }
-        });
     }
 
+    // Initialize dropdowns for BRO LIST and TECH LIST
     setupDropdown("broListToggle", "broListMenu");
     setupDropdown("techListToggle", "techListMenu");
 });
@@ -243,24 +321,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sidebar hover effect
-        const sidebar = document.getElementById('sidebar');
-        const content = document.getElementById('content');
+    document.addEventListener("DOMContentLoaded", function() {
+    // Sidebar hover effect
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
 
-        sidebar.addEventListener('mouseenter', () => {
-            sidebar.classList.remove('collapsed');
-            content.classList.remove('expanded');
-        });
+    sidebar.addEventListener('mouseenter', () => {
+        sidebar.classList.remove('collapsed');
+        content.classList.remove('expanded');
+    });
 
-        sidebar.addEventListener('mouseleave', () => {
-            sidebar.classList.add('collapsed');
-            content.classList.add('expanded');
-        });
-    </script>
-<script>
+    sidebar.addEventListener('mouseleave', () => {
+        sidebar.classList.add('collapsed');
+        content.classList.add('expanded');
+    });
+
+    // Auto-remove success messages after 3 seconds
     setTimeout(function() {
         document.querySelector('.alert-success')?.remove();
-    }, 3000); // Message disappears after 3 seconds
+    }, 3000);
+
+    // Dropdown toggle functionality
+    document.querySelectorAll(".nav-link.dropdown-toggle").forEach(function(toggle) {
+        toggle.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent page reload
+            
+            let menu = this.nextElementSibling; // Get the next UL menu
+            
+            if (menu && menu.classList.contains("collapse")) {
+                // Close all other open dropdowns
+                document.querySelectorAll(".collapse.show").forEach(m => {
+                    if (m !== menu) {
+                        m.classList.remove("show");
+                    }
+                });
+
+                // Toggle the clicked menu
+                menu.classList.toggle("show");
+            }
+        });
+    });
+});
 </script>
 </body>
 </html>

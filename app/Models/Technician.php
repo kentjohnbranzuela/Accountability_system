@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Technician extends Model
 {
     use HasFactory;
+    protected $table = 'technicians';
+
     protected $fillable = [
-        'Position', 'name', 'date', 'quantity', 'description', 'ser_no', 'status'
+        'position', 'name', 'date', 'quantity', 'description', 'ser_no', 'status'
     ];
     
     // Ensure ser_no can be null

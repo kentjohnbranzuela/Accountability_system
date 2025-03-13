@@ -4,64 +4,108 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Technician;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\TechnicianImport;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class TechnicianController extends Controller
 {
-    public function records()
-    {
-        $technicians = Technician::all(); // Fetch all technicians
-        return view('technician.records', compact('technicians'));
-    }    
-
     public function create()
     {
         return view('technician.create');
     }
 
+    public function records(Request $request)
+    {
+        $query = Technician::query();
+    
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('position', 'LIKE', "%$search%")
+                  ->orWhere('name', 'LIKE', "%$search%")
+                  ->orWhere('description', 'LIKE', "%$search%")
+                  ->orWhere('ser_no', 'LIKE', "%$search%")
+                  ->orWhere('status', 'LIKE', "%$search%");
+            });
+        }
+    
+        // Fetch records
+        $technicians = $query->paginate(19);
+    
+        // Find duplicate serial numbers
+        $duplicateSerNos = Technician::select('ser_no')
+    ->whereNotNull('ser_no')
+    ->groupBy('ser_no')
+    ->havingRaw('COUNT(ser_no) > 1')
+    ->pluck('ser_no')
+    ->toArray(); // Convert Collection to plain array
+
+return view('technician.records', compact('technicians', 'duplicateSerNos'));
+    }
     public function store(Request $request)
 {
-    $technician = Technician::create([
-        'Position' => $request->Position,
+    $request->validate([
+        'serial_no' => 'nullable|string|max:255', // Make sure this matches your field name
+    ]);
+
+    // Ensure field names match your database table
+    Technician::create([
+        'position' => $request->Position,
         'name' => $request->name,
         'date' => $request->date,
         'quantity' => $request->quantity,
         'description' => $request->description,
-        'ser_no' => $request->serial_no,  // Use correct column name
+        'ser_no' => $request->serial_no, // Map 'serial_no' from form to 'ser_no' in DB
         'status' => $request->status,
     ]);
 
-    return redirect()->route('technician.records')->with('success', 'Technician added successfully!');
+    return back()->with('success', 'Technician record saved!');
 }
-    public function show(Technician $technician)
+
+    
+    public function edit($id)
     {
-        return view('technician.show', compact('technician'));
+        $record = Technician::findOrFail($id);
+        return view('technician.edit', compact('record'));
     }
 
-    public function edit(Technician $technician)
+    public function update(Request $request, $id)
     {
-        return view('technician.edit', compact('technician'));
-    }
+        $record = Technician::findOrFail($id);
 
-    public function update(Request $request, Technician $technician)
-    {
         $request->validate([
-            'Position' => 'required|string',
+            'id_number' => 'required|string',
             'name' => 'required|string',
             'date' => 'required|date',
             'quantity' => 'required|integer',
             'description' => 'required|string',
-            'ser_no' => 'required|string|unique:technicians,ser_no,' . $technician->id, // Fixed table name
-            'status' => 'required|string',
         ]);
 
-        $technician->update($request->all());
+        $record->update($request->all());
 
-        return redirect()->route('technician.records')->with('success', 'Technician updated successfully.');
+        return redirect()->route('technician.records')->with('success', 'Record updated successfully!');
     }
 
-    public function destroy(Technician $technician)
+    public function destroy($id)
     {
-        $technician->delete();
-        return redirect()->route('technician.records')->with('success', 'Technician deleted successfully.');
+        $record = Technician::findOrFail($id);
+        $record->delete();
+
+        return redirect()->route('technician.records')->with('success', 'Record deleted successfully!');
+    }
+    public function importExcel(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        // Import the file
+        Excel::import(new TechnicianImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data Imported Successfully!');
     }
 }
+

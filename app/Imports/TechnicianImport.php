@@ -2,26 +2,28 @@
 
 namespace App\Imports;
 
-use App\Models\AccountabilityRecord;
+use App\Models\Technician;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-
-class AccountabilityImport implements ToModel, WithHeadingRow
+class TechnicianImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
 {
-    return new AccountabilityRecord([
-        'id_number'   => $row['id_number'] ?? null,  
+    \Log::info('Imported Row: ', $row); // Debugging line to check imported data
+
+    return new Technician([
+       'position'   => $row['position'] ?? null,  
         'name'        => $row['name'] ?? 'Unknown',
         'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(),
         'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
         'description'  => empty($row['description']) ? 'N/A' : $row['description'], // FIXED: Replace empty/NULL with "N/A"
-        'ser_no'      => empty($row['serial_no']) || $row['serial_no'] === 'N/A' ? null : $row['serial_no'],
-        'status'      => $row['status'] ?? 'Unknown', 
+        'ser_no'      => empty($row['ser_no']) || $row['ser_no'] === 'N/A' ? null : $row['ser_no'],
+        'status'      => $row['status'] ?? 'Unknown',
+      
     ]);
-}
+}     
     /**
      * Convert Excel serial number or text date to a valid MySQL date format.
      */

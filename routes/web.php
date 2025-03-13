@@ -35,6 +35,7 @@ Route::post('/account-update', [AuthController::class, 'updateAccount'])->name('
 Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('update.password');
 
 Route::get('/technician/records', [TechnicianController::class, 'records'])->name('technician.records');
+Route::post('/technician-update', [TechnicianController::class, 'updateAccount'])->name('technician.update');
 Route::get('/technician/create', [TechnicianController::class, 'create'])->name('technician.create');
 Route::post('/technician/store', [TechnicianController::class, 'store'])->name('technician.store');
 Route::resource('technician', TechnicianController::class);
@@ -45,6 +46,8 @@ Route::resource('technician', TechnicianController::class);
 
     // Import Route
     Route::post('/import-excel', [AccountabilityRecordsController::class, 'importExcel'])->name('accountability.import');
+    Route::post('/technician/import', [TechnicianController::class, 'importExcel'])->name('technician.import');
+
 
    
 

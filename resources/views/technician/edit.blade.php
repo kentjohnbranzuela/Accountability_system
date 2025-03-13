@@ -2,19 +2,19 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="text-primary">Edit Accountability Record</h2>
+    <h2 class="text-primary">Edit Technician Record</h2>
 
     @if(session('success'))
     @endif
 
     <div class="card p-3 shadow-sm">
-        <form action="{{ route('accountability.update', $record->id) }}" method="POST" class="row g-3">
+        <form action="{{ route('technician.update', $record->id) }}" method="POST" class="row g-3">
             @csrf
             @method('PUT')
 
             <div class="col-md-3">
-                <label for="id_number" class="form-label">ID Number</label>
-                <input type="text" name="id_number" class="form-control" value="{{ $record->id_number }}" required>
+                <label for="id_number" class="form-label">Position</label>
+                <input type="text" name="id_number" class="form-control" value="{{ $record->position }}" required>
             </div>
             <div class="col-md-3">
                 <label for="name" class="form-label">Name</label>

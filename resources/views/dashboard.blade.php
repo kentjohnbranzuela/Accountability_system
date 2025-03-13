@@ -62,26 +62,37 @@
 
     <!-- Data Table Section -->
     <div class="container-fluid mt-4 table-container">
-        <table class="table">
-            <thead>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Count</th>
+                <th class="print-only">Year</th> <!-- Added Year Column for Print -->
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Accountability Data -->
+            @foreach ($finalData as $index => $item)
                 <tr>
-                    <th>#</th>
-                    <th>Description</th>
-                    <th>Count</th>
-                    <th class="print-only">Year</th> <!-- Added Year Column for Print -->
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $item['description'] }}</td>
+                    <td>{{ $item['count'] }}</td>
+                    <td class="print-only">{{ $selectedYear }}</td> <!-- Show Year Only in Print -->
                 </tr>
-            </thead>
-            <tbody id="tableBody">
-                @foreach ($finalData as $index => $item)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $item['description'] }}</td>
-                        <td>{{ $item['count'] }}</td>
-                        <td class="print-only">{{ $selectedYear }}</td> <!-- Show Year Only in Print -->
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            @endforeach
+
+            <!-- Technician Data -->
+            @foreach ($technicianData as $index => $tech)
+                <tr>
+                    <td>{{ $finalData->count() + $index + 1 }}</td> <!-- Continue numbering -->
+                    <td>{{ $tech->description }}</td>
+                    <td>{{ $tech['count'] }}</td>
+                    <td class="print-only">{{ $selectedYear }}</td> <!-- No year filter for Technician Records -->
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
     </div>
 
     <!-- Print-Friendly Styles -->

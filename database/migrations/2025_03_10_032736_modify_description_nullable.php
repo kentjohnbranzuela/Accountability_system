@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('accountability_records', function (Blueprint $table) {
-            $table->string('description')->nullable()->change();
+            $table->string('description')->default('N/A')->nullable()->change(); // Set default "N/A"
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('accountability_records', function (Blueprint $table) {
-            $table->string('description')->nullable(false)->change(); // Revert if needed
+            $table->string('description')->nullable(false)->default(null)->change(); // Revert default
         });
     }
 };
