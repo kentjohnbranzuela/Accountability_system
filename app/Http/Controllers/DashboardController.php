@@ -9,7 +9,7 @@ use App\Models\Technician;
 
 class DashboardController extends Controller
 {
-    public function dashboard(Request $request)
+   public function dashboard(Request $request)
 {
     // Fetch available years from all tables
     $years = AccountabilityRecord::selectRaw('YEAR(date) as year')
@@ -19,32 +19,52 @@ class DashboardController extends Controller
         ->orderBy('year', 'desc')
         ->pluck('year');
 
-    // Determine selected year: use request input, otherwise use latest available year
+    // Get selected year and source from request
     $selectedYear = $request->input('year', $years->first() ?? now()->year);
+    $selectedSource = $request->input('source', null); // Default to "All Sources"
 
-    // Fetch data from all sources
-    $accountabilityData = AccountabilityRecord::whereYear('date', $selectedYear)
+    // Initialize data queries
+    $accountabilityQuery = AccountabilityRecord::whereYear('date', $selectedYear)
         ->selectRaw('description, SUM(quantity) as count, "Accountability" as source')
-        ->groupBy('description')
-        ->get();
+        ->groupBy('description');
 
-    $gingoogData = Gingoog::whereYear('date', $selectedYear)
+    $gingoogQuery = Gingoog::whereYear('date', $selectedYear)
         ->selectRaw('description, SUM(quantity) as count, "Gingoog" as source')
-        ->groupBy('description')
-        ->get();
+        ->groupBy('description');
 
-    $technicianData = Technician::whereYear('date', $selectedYear)
+    $technicianQuery = Technician::whereYear('date', $selectedYear)
         ->selectRaw('description, SUM(quantity) as count, "Technician" as source')
-        ->groupBy('description')
-        ->get();
+        ->groupBy('description');
 
-    // Merge all data collections
+    // Apply source filter if a specific source is selected
+    if ($selectedSource) {
+        if ($selectedSource === 'Accountability') {
+            $gingoogQuery = collect(); // Empty the other datasets
+            $technicianQuery = collect();
+        } elseif ($selectedSource === 'Gingoog') {
+            $accountabilityQuery = collect();
+            $technicianQuery = collect();
+        } elseif ($selectedSource === 'Technician') {
+            $accountabilityQuery = collect();
+            $gingoogQuery = collect();
+        }
+    }
+
+    // Retrieve data from database
+    $accountabilityData = is_a($accountabilityQuery, 'Illuminate\Database\Eloquent\Builder') ? $accountabilityQuery->get() : $accountabilityQuery;
+    $gingoogData = is_a($gingoogQuery, 'Illuminate\Database\Eloquent\Builder') ? $gingoogQuery->get() : $gingoogQuery;
+    $technicianData = is_a($technicianQuery, 'Illuminate\Database\Eloquent\Builder') ? $technicianQuery->get() : $technicianQuery;
+
+    // Merge all filtered data collections
     $mergedData = $accountabilityData->concat($gingoogData)->concat($technicianData);
 
-    // If no records exist, display a message
-    $message = $mergedData->isEmpty() ? "No records found for year: " . $selectedYear : null;
+    // Fetch unique sources for the dropdown
+    $sources = ['Accountability', 'Gingoog', 'Technician', 'BC-CDO LIST', 'TURN-OVER LIST', 'AWOL LIST', 'RESIGN LIST'];
 
-    return view('dashboard', compact('mergedData', 'selectedYear', 'years', 'message'));
+    // If no records exist, display a message
+    $message = $mergedData->isEmpty() ? "No records found for year: $selectedYear and source: $selectedSource" : null;
+
+    return view('dashboard', compact('mergedData', 'selectedYear', 'selectedSource', 'years', 'sources', 'message'));
 }
 
 }

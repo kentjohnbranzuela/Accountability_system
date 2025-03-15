@@ -17,24 +17,37 @@
                     </option>
                 @endforeach
             </select>
+            <form method="GET" action="{{ route('dashboard') }}" class="mb-3 text-center">
+    <label for="source" class="fw-bold me-2">Filter by Source:</label>
+    <select name="source" id="source" class="form-select w-auto d-inline shadow-sm" onchange="this.form.submit()">
+        <option value="">All Sources</option>
+        @foreach ($sources as $source)
+            <option value="{{ $source }}" {{ $selectedSource == $source ? 'selected' : '' }}>
+                {{ $source }}
+            </option>
+        @endforeach
+    </select>
+</form>
+
         </form>
     </div>
-
-    <!-- Search and Print Controls Section -->
-    <div class="card shadow-lg p-3 border-0 rounded-4 mb-4 search-print-container">
-        <div class="text-center">
-            <!-- Search Bar -->
-            <div class="input-group mb-3 w-50 mx-auto shadow-sm">
-                <span class="input-group-text bg-primary text-white"><i class="fas fa-search"></i></span>
-                <input type="text" id="searchInput" class="form-control" placeholder="Search description...">
-            </div>
-
-            <!-- Print Button -->
-            <button class="btn btn-success shadow-sm print-btn" onclick="prepareForPrint()">
-                <i class="fas fa-print"></i> Print Report
-            </button>
+          <!-- Search and Print Controls Section -->
+<div class="card shadow-lg p-3 border-0 rounded-4 mb-4 search-print-container">
+    <div class="text-center">
+        <!-- Search Bar -->
+        <div class="input-group mb-3 w-50 mx-auto shadow-sm">
+            <span class="input-group-text bg-primary text-white"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search description...">
+            <button class="btn btn-primary" onclick="searchData()"><i class="fas fa-search"></i> Search</button>
         </div>
+
+        <!-- Print Button -->
+        <button class="btn btn-success shadow-sm print-btn" onclick="prepareForPrint()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
     </div>
+</div>
+
 
     <!-- Print Header (Visible Only in Print) -->
     <div class="print-header">
@@ -133,8 +146,8 @@
         display:none !important;
     }
     /* Hide sidebar if applicable */
-    .sidebar { 
-        display: none !important; 
+    .sidebar {
+        display: none !important;
         width: 0 !important;
     }
 
