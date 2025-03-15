@@ -63,37 +63,33 @@
     <!-- Data Table Section -->
     <div class="container-fluid mt-4 table-container">
     <table class="table">
-        <thead>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Description</th>
+        <th>Count</th>
+        <th>Source</th> <!-- NEW COLUMN -->
+        <th class="print-only">Year</th>
+    </tr>
+</thead>
+<tbody id="tableBody">
+    @if ($mergedData->isEmpty())
+        <tr>
+            <td colspan="5" class="text-center text-danger">{{ $message ?? 'No data available' }}</td>
+        </tr>
+    @else
+        @foreach ($mergedData as $index => $item)
             <tr>
-                <th>#</th>
-                <th>Description</th>
-                <th>Count</th>
-                <th class="print-only">Year</th> <!-- Added Year Column for Print -->
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $item->description }}</td>
+                <td>{{ $item->count }}</td>
+                <td>{{ $item->source }}</td> <!-- DISPLAY DATA SOURCE -->
+                <td class="print-only">{{ $selectedYear }}</td>
             </tr>
-        </thead>
-        <tbody id="tableBody">
-            <!-- Accountability Data -->
-            @foreach ($finalData as $index => $item)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $item['description'] }}</td>
-                    <td>{{ $item['count'] }}</td>
-                    <td class="print-only">{{ $selectedYear }}</td> <!-- Show Year Only in Print -->
-                </tr>
-            @endforeach
+        @endforeach
+    @endif
+</tbody>
 
-            <!-- Technician Data -->
-            @foreach ($technicianData as $index => $tech)
-                <tr>
-                    <td>{{ $finalData->count() + $index + 1 }}</td> <!-- Continue numbering -->
-                    <td>{{ $tech->description }}</td>
-                    <td>{{ $tech['count'] }}</td>
-                    <td class="print-only">{{ $selectedYear }}</td> <!-- No year filter for Technician Records -->
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    </div>
 
     <!-- Print-Friendly Styles -->
     <style>

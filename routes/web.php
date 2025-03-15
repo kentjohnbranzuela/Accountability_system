@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountabilityRecordsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\GingoogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +47,20 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::post('/technician/store', [TechnicianController::class, 'store'])->name('technician.store');
     Route::get('/export-technicians', [TechnicianController::class, 'exportExcel'])->name('export.technicians');
     Route::resource('technician', TechnicianController::class);
+
+    //gingoog
+    Route::get('/gingoogs/export', [GingoogController::class, 'export'])->name('gingoogs.export');
+    Route::delete('/gingoogs/delete-all', [GingoogController::class, 'deleteAll'])->name('gingoogs.deleteAll');
+    Route::get('/gingoogs/create', [GingoogController::class, 'create'])->name('gingoogs.create');
+    Route::get('/gingoogs', [GingoogController::class, 'records'])->name('gingoogs.records');
+    Route::get('/gingoogs/{id}', [GingoogController::class, 'show'])->name('gingoogs.show');
+    Route::get('/gingoogs/{id}/edit', [GingoogController::class, 'edit'])->name('gingoogs.edit');
+    Route::put('/gingoogs/{id}', [GingoogController::class, 'update'])->name('gingoogs.update');
+    Route::post('/gingoogs/store', [GingoogController::class, 'store'])->name('gingoogs.store');
+    Route::delete('/gingoogs/{id}', [GingoogController::class, 'destroy'])->name('gingoogs.destroy');
+    Route::post('/gingoogs/import', [GingoogController::class, 'import'])->name('gingoogs.import');
 });
-    // Accountability Routes
+  
    
    
 

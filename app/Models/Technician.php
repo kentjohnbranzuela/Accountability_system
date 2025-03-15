@@ -13,10 +13,5 @@ class Technician extends Model
     protected $fillable = [
         'position', 'name', 'date', 'quantity', 'description', 'ser_no', 'status'
     ];
-    
-    // Ensure ser_no can be null
-    protected $casts = [
-        'ser_no' => 'string',
-    ];    
 }
 

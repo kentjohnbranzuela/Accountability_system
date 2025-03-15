@@ -5,6 +5,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackline</title>
+    <!-- Loading Overlay -->
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+</div>
     <link rel="icon" type="image/jpeg" href="{{ asset('2.jpg') }}">
  <!-- Change filename if needed -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -137,6 +142,37 @@
     background-color: rgba(255, 255, 255, 0.5);
 }
 
+ /* Full-screen overlay */
+ #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        font-size: 20px;
+        z-index: 9999;
+    }
+
+    /* Spinner animation */
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
 </head>
 <body>
@@ -174,15 +210,15 @@
     </ul>
 </li>
 <li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle">
-        <i class="fas fa-folder"></i>📌 BC-GINGOOG LIST
+    <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle" data-toggle="collapse" data-target="#bcGingoogMenu">
+        <i class="fas fa-folder"></i> 📌 BC-GINGOOG LIST
     </a>
     <ul class="collapse list-unstyled" id="bcGingoogMenu">
         <li>
-            <a href="#" class="nav-link">GINGOOG Records</a>
+        <a href="{{ route('gingoogs.records') }}" class="nav-link">GINGOOG Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link">Add Records</a>
+            <a href="{{ route('gingoogs.create') }}" class="nav-link">Add Records</a>
         </li>
     </ul>
 </li>
@@ -246,6 +282,11 @@
     </div>
     <script>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("bcGingoogToggle").addEventListener("click", function () {
+            document.getElementById("bcGingoogMenu").classList.toggle("show");
+        });
+    });
 document.addEventListener("DOMContentLoaded", function () {
     function setupDropdown(toggleId, menuId) {
         let dropdownToggle = document.getElementById(toggleId);
@@ -323,18 +364,31 @@ document.addEventListener("DOMContentLoaded", function () {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-    // Sidebar hover effect
     const sidebar = document.getElementById('sidebar');
     const content = document.getElementById('content');
 
+    // Load the sidebar state from localStorage
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+        content.classList.add('expanded');
+    } else {
+        sidebar.classList.remove('collapsed');
+        content.classList.remove('expanded');
+    }
+
+    // Sidebar hover effect
     sidebar.addEventListener('mouseenter', () => {
         sidebar.classList.remove('collapsed');
         content.classList.remove('expanded');
+        localStorage.setItem('sidebarCollapsed', 'false'); // Save state
     });
 
     sidebar.addEventListener('mouseleave', () => {
         sidebar.classList.add('collapsed');
         content.classList.add('expanded');
+        localStorage.setItem('sidebarCollapsed', 'true'); // Save state
     });
 
     // Auto-remove success messages after 3 seconds
@@ -346,9 +400,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".nav-link.dropdown-toggle").forEach(function(toggle) {
         toggle.addEventListener("click", function(event) {
             event.preventDefault(); // Prevent page reload
-            
+
             let menu = this.nextElementSibling; // Get the next UL menu
-            
+
             if (menu && menu.classList.contains("collapse")) {
                 // Close all other open dropdowns
                 document.querySelectorAll(".collapse.show").forEach(m => {
@@ -386,6 +440,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+// Hide loading overlay when page fully loads
+    window.addEventListener("load", function() {
+        document.getElementById("loading-overlay").style.display = "none";
+    });
 </script>
 </body>
 </html>

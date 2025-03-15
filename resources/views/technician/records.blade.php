@@ -180,13 +180,14 @@
                                     <a href="#" class="btn btn-sm btn-warning EditTechnician" data-id="{{ $technician->id }}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>              
-                                        <form action="{{ route('technician.destroy', $technician->id) }}" id="deleteForm1" method="POST">
-                                      @csrf
-                                            @method('DELETE')
-                                            <button type="button" id="Delete1" class="btn btn-sm btn-danger">
-                                                <i class="fas fa-trash-alt"></i> Delete
-                                            </button>
-                                        </form>
+                                    <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm">
+        @csrf
+        @method('DELETE')
+        <button type="button" class="btn btn-sm btn-danger deleteButton">
+            <i class="fas fa-trash-alt"></i> Delete
+        </button>
+    </form>
+
                                     </div>
                                 </td>
                             </tr>
@@ -204,7 +205,8 @@
 
     {{-- Hidden Printable Receipt --}}
     <div id="printableReceipt" style="display: none;">
-        <h2 style="text-align: center;">Black Line Republic</h2>
+    <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('2.jpg'))) }}" class="print-logo"
+    style="width: 100px !important; height: 100px !important; border-radius: 50% !important; object-fit: cover !important; display: block !important;">        <h2 style="text-align: center;">Black Line Republic</h2>
         <h3 style="text-align: center;">ACKNOWLEDGEMENT RECEIPT FOR TECHNICIAN EQUIPEMENT</h3>
 
         <p><strong>Name:</strong> {{ $technicians->first()->name ?? '___________________________' }}</p>
@@ -228,10 +230,13 @@
                         <td style="border: 1px solid black; padding: 5px;">{{ $technician->date }}</td>
                         <td style="border: 1px solid black; padding: 5px;">{{ $technician->quantity }}</td>
                         <td style="border: 1px solid black; padding: 5px;">{{ $technician->description }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ $technician->ser_no }}</td>
                         <td style="border: 1px solid black; padding: 5px;">
-    {{ $technician->status !== 'Unknown' ? $technician->status : '' }}
+    {{ !in_array($technician->ser_no, ['Unknown', 'N/A']) ? $technician->ser_no : '' }}
 </td>
+<td style="border: 1px solid black; padding: 5px;">
+    {{ !in_array($technician->status, ['Unknown', 'N/A']) ? $technician->status : '' }}
+</td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -377,15 +382,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 document.addEventListener("DOMContentLoaded", function () {
-    let deleteButton = document.getElementById("Delete1");
-
-    if (deleteButton) {
-        deleteButton.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent default form submission
+    document.querySelectorAll(".deleteButton").forEach(function (button) {
+        button.addEventListener("click", function () {
+            let form = this.closest(".deleteForm"); // Get the parent form
 
             Swal.fire({
                 title: "Are you sure?",
-                text: "This record will be permanently deleted!",
+                text: "You won't be able to revert this!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
@@ -393,13 +396,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById("deleteForm1").submit(); // Manually submit form if confirmed
+                    form.submit(); // Submit the form on confirmation
                 }
             });
         });
-    } else {
-        console.error("Delete button not found! Check your HTML ID.");
-    }
+    });
 });
 document.addEventListener("DOMContentLoaded", function () {
     let editButtons = document.querySelectorAll(".EditTechnician"); // Select all Edit buttons

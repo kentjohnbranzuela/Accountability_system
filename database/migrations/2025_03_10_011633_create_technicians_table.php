@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('position')->nullable();
             $table->string('name'); // Technician Name
             $table->date('date'); // Joining Date or Record Date
-            $table->integer('quantity'); // Number of Assigned Tasks/Tools
+            $table->integer('quantity')->default(0);
             $table->text('description'); // Description of Work/Tools Assigned
             $table->string('ser_no')->nullable(); // Remove unique() // Serial Number (e.g., Equipment ID)
             $table->string('status'); // Active, Inactive, or Other Status

@@ -4,40 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AccountabilityRecord;
-use App\Models\Technician; // Import Technician model
+use App\Models\Gingoog;
+use App\Models\Technician;
 
 class DashboardController extends Controller
 {
     public function dashboard(Request $request)
-    {
-        // Get all unique years from accountability records
-        $years = AccountabilityRecord::selectRaw('YEAR(date) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+{
+    // Fetch available years from all tables
+    $years = AccountabilityRecord::selectRaw('YEAR(date) as year')
+        ->union(Gingoog::selectRaw('YEAR(date) as year'))
+        ->union(Technician::selectRaw('YEAR(date) as year'))
+        ->distinct()
+        ->orderBy('year', 'desc')
+        ->pluck('year');
 
-        // Ensure 2023 appears in the dropdown
-        if (!$years->contains(2023)) {
-            $years->push(2023);
-        }
+    // Determine selected year: use request input, otherwise use latest available year
+    $selectedYear = $request->input('year', $years->first() ?? now()->year);
 
-        // Get selected year (default to current year)
-        $selectedYear = $request->input('year', now()->year);
+    // Fetch data from all sources
+    $accountabilityData = AccountabilityRecord::whereYear('date', $selectedYear)
+        ->selectRaw('description, SUM(quantity) as count, "Accountability" as source')
+        ->groupBy('description')
+        ->get();
 
-        // Fetch accountability data (Grouped by description)
-        $finalData = AccountabilityRecord::whereYear('date', $selectedYear)
-            ->selectRaw('description, SUM(quantity) as count') // Change COUNT(*) to SUM(quantity)
-            ->groupBy('description')
-            ->orderBy('count', 'desc')
-            ->get();
+    $gingoogData = Gingoog::whereYear('date', $selectedYear)
+        ->selectRaw('description, SUM(quantity) as count, "Gingoog" as source')
+        ->groupBy('description')
+        ->get();
 
-        // Fetch technician data (Grouped by description) - **Fixed query to filter by year**
-        $technicianData = Technician::whereYear('date', $selectedYear) // Added filtering by year
-            ->selectRaw('description, SUM(quantity) as count') // Fixed duplicate selectRaw
-            ->groupBy('description')
-            ->orderBy('count', 'desc')
-            ->get();
+    $technicianData = Technician::whereYear('date', $selectedYear)
+        ->selectRaw('description, SUM(quantity) as count, "Technician" as source')
+        ->groupBy('description')
+        ->get();
 
-        return view('dashboard', compact('years', 'selectedYear', 'finalData', 'technicianData'));
-    }
+    // Merge all data collections
+    $mergedData = $accountabilityData->concat($gingoogData)->concat($technicianData);
+
+    // If no records exist, display a message
+    $message = $mergedData->isEmpty() ? "No records found for year: " . $selectedYear : null;
+
+    return view('dashboard', compact('mergedData', 'selectedYear', 'years', 'message'));
+}
+
 }

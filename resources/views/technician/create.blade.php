@@ -28,16 +28,16 @@
                         <input type="date" name="date" class="form-control rounded-3" required>
                     </div>
                     <div class="col-md-4">
-                        <input type="number" name="quantity" class="form-control rounded-3" placeholder="Quantity" required>
+                        <input type="number" name="quantity" class="form-control rounded-3" placeholder="Quantity">
                     </div>
                     <div class="col-md-4">
-                        <input type="text" name="description" class="form-control rounded-3" placeholder="Description" required>
+                        <input type="text" name="description" class="form-control rounded-3" placeholder="Description">
                     </div>
                     <div class="col-md-4">
-                        <input type="text" name="serial_no" class="form-control rounded-3" placeholder="Serial No." required>
+                        <input type="text" name="ser_no" class="form-control rounded-3" value="{{ old('ser_no') }}" placeholder="Serial No.">
                     </div>
                     <div class="col-md-4">
-                        <input type="text" name="status" class="form-control rounded-3" placeholder="Status" required>
+                        <input type="text" name="status" class="form-control rounded-3"  placeholder="Status">
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="btn btn-success w-100 rounded-pill">Save Technician</button>

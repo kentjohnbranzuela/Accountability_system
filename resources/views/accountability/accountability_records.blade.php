@@ -55,7 +55,15 @@
         }
         .duplicate {
         color: red;
-        font-weight: bold;
+        fon
+        t-weight: bold;
+    }
+    .print-logo {
+        width: 100px; /* Adjust size as needed */
+        height: 100px; /* Ensure width and height are equal for a perfect circle */
+        border-radius: 50%; /* Makes it round */
+        object-fit: cover; /* Ensures the image maintains its aspect ratio */
+        border: 2px solid #ccc; /* Optional: Add a border around the logo */
     }
     #Delete{
         margin-top: 5px; /* Space between search and delete button */
@@ -174,7 +182,8 @@
 
             <!-- Hidden Printable Receipt -->
             <div id="printableReceipt" style="display: none;">
-        <h2 style="text-align: center;">Black Line Republic</h2>
+            <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('2.jpg'))) }}" class="print-logo"
+            style="width: 100px !important; height: 100px !important; border-radius: 50% !important; object-fit: cover !important; display: block !important;">            <h2 style="text-align: center;">Black Line Republic</h2>
         <h3 style="text-align: center;">ACKNOWLEDGEMENT RECEIPT FOR BRO EQUIPMENT</h3>
 
         <!-- Dynamically insert the first name & position (ID Number) from the records -->
@@ -198,10 +207,11 @@
                         <td style="border: 1px solid black; padding: 5px;">{{ $record->date }}</td>
                         <td style="border: 1px solid black; padding: 5px;">{{ $record->quantity }}</td>
                         <td style="border: 1px solid black; padding: 5px;">{{ $record->description }}</td>
-                        <td style="border: 1px solid black; padding: 5px;">{{ $record->ser_no }}</td>
                         <td style="border: 1px solid black; padding: 5px;">
-        {{ $record->status !== 'Unknown' ? $record->status : '' }}
-    </td>
+        {{ $record->ser_no !== ['Unknown','N/A'] ? $record->ser_no : '' }}
+    </td>                        <td style="border: 1px solid black; padding: 5px;">
+    {{ !in_array($record->status, ['Unknown', 'N/A']) ? $record->status : '' }}
+</td>
                     </tr>
                     @php
         // Count how many times this serial number appears

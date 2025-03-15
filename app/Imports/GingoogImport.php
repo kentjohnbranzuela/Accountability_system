@@ -2,31 +2,27 @@
 
 namespace App\Imports;
 
-use App\Models\Technician;
+use App\Models\Gingoog;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
-class TechnicianImport implements ToModel, WithHeadingRow
+
+class GingoogImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
-{
-    \Log::info('Imported Row: ', $row); // Debugging line to check imported data
+    {
+        return new Gingoog([
+            'position'   => $row['position'] ?? null,  
+            'name'       => $row['name'] ?? 'Unknown',
+            'date'       => isset($row['date']) ? $this->transformDate($row['date']) : now(),
+            'quantity'   => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
+            'description'=> empty($row['description']) ? 'N/A' : $row['description'],
+            'ser_no' => empty($row['serial_no']) || $row['serial_no'] === 'N/A' ? null : $row['serial_no'],
+            'status'     => $row['status'] ?? 'Unknown',
+        ]);
+    }
 
-    return new Technician([
-       'position'   => $row['position'] ?? null,  
-        'name'        => $row['name'] ?? 'Unknown',
-        'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(),
-        'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
-        'description'  => empty($row['description']) ? 'N/A' : $row['description'], // FIXED: Replace empty/NULL with "N/A"
-        'ser_no'      => empty($row['serial_no']) || $row['serial_no'] === 'N/A' ? null : $row['serial_no'],
-        'status'      => $row['status'] ?? 'Unknown',
-      
-    ]);
-}     
-    /**
-     * Convert Excel serial number or text date to a valid MySQL date format.
-     */
     public function transformDate($date)
     {
         if (!$date) {
@@ -64,4 +60,3 @@ class TechnicianImport implements ToModel, WithHeadingRow
         return null; // Return null if none of the formats work
     }
 }
-

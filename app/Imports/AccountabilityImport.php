@@ -13,7 +13,9 @@ class AccountabilityImport implements ToModel, WithHeadingRow
     public function model(array $row)
 {
     return new AccountabilityRecord([
-        'id_number'   => $row['id_number'] ?? null,  
+'id_number' => !empty($row['id_number'] ?? $row['position'] ?? $row['ID'] ?? $row['ID Number']) 
+    ? trim($row['id_number'] ?? $row['position'] ?? $row['ID'] ?? $row['ID Number'])
+    : 'UNKNOWN',
         'name'        => $row['name'] ?? 'Unknown',
         'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(),
         'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
@@ -28,23 +30,38 @@ class AccountabilityImport implements ToModel, WithHeadingRow
     public function transformDate($date)
     {
         if (!$date) {
-            return now()->format('Y-m-d'); // Default to today if null
+            return null; // Return null instead of defaulting to today
         }
-
+    
         // Check if the date is a numeric serial (Excel format)
         if (is_numeric($date)) {
-            return Carbon::instance(Date::excelToDateTimeObject($date))->format('Y-m-d');
+            try {
+                return Carbon::instance(Date::excelToDateTimeObject($date))->format('Y-m-d');
+            } catch (\Exception $e) {
+                return null; // Return null if conversion fails
+            }
         }
-
+    
         // Remove day name if present (e.g., "Wednesday, 21 February 2024")
         $cleaned = preg_replace('/^[A-Za-z]+,\s*/', '', $date);
-
-        // Convert to standard format
-        try {
-            return Carbon::createFromFormat('d F Y', $cleaned)->format('Y-m-d');
-        } catch (\Exception $e) {
-            return now()->format('Y-m-d'); // Default to today if error
+    
+        // Try different possible date formats
+        $formats = [
+            'd F Y', // 21 February 2024
+            'Y-m-d', // 2024-02-21
+            'm/d/Y', // 02/21/2024 (US format)
+            'd/m/Y', // 21/02/2024 (EU format)
+        ];
+    
+        foreach ($formats as $format) {
+            try {
+                return Carbon::createFromFormat($format, $cleaned)->format('Y-m-d');
+            } catch (\Exception $e) {
+                continue;
+            }
         }
+    
+        return null; // Return null if none of the formats work
     }
 }
 

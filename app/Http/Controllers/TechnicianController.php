@@ -46,25 +46,31 @@ class TechnicianController extends Controller
 return view('technician.records', compact('technicians', 'duplicateSerNos'));
     }
     public function store(Request $request)
-{
-    $request->validate([
-        'serial_no' => 'nullable|string|max:255', // Make sure this matches your field name
-    ]);
-
-    // Ensure field names match your database table
-    Technician::create([
-        'position' => $request->Position,
-        'name' => $request->name,
-        'date' => $request->date,
-        'quantity' => $request->quantity,
-        'description' => $request->description,
-        'ser_no' => $request->serial_no, // Map 'serial_no' from form to 'ser_no' in DB
-        'status' => $request->status,
-    ]);
-
-    return back()->with('success', 'Technician record saved!');
-}
-
+    {
+        $request->validate([
+            'Position' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'date' => 'required|date',
+            'quantity' => 'nullable|integer|min:0', // Allow integer values, but nullable
+            'ser_no' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
+        ]);
+    
+        // Ensure default values are assigned if input is missing
+        $data = [
+            'position' => $request->input('Position'),
+            'name' => $request->input('name'),
+            'date' => $request->input('date'),
+            'quantity' => $request->filled('quantity') ? $request->input('quantity') : 0, // If provided, use it; otherwise, default to 0
+            'description' => $request->input('description', ''), // If empty, store empty string
+            'ser_no' => $request->filled('ser_no') ? $request->input('ser_no') : 'N/A', // If provided, use it; otherwise, default to "N/A"
+            'status' => $request->filled('status') ? $request->input('status') : 'N/A', // If provided, use it; otherwise, default to "N/A"
+        ];
+    
+        Technician::create($data);
+    
+        return back()->with('success', 'Technician record saved!');
+    }
     
     public function edit($id)
     {
@@ -80,8 +86,6 @@ return view('technician.records', compact('technicians', 'duplicateSerNos'));
             'id_number' => 'required|string',
             'name' => 'required|string',
             'date' => 'required|date',
-            'quantity' => 'required|integer',
-            'description' => 'required|string',
         ]);
 
         $record->update($request->all());

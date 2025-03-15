@@ -50,15 +50,26 @@ class AccountabilityRecordsController extends Controller
             'id_number' => 'required|string',
             'name' => 'required|string',
             'date' => 'required|date',
-            'quantity' => 'required|integer',
-            'description' => 'required|string',
-            'ser_no' => 'required|string|unique:accountability_records,ser_no',
-            'status' => 'required|string',
+            'quantity' => 'nullable|integer', // Allow quantity to be nullable but must be an integer if provided
         ]);
-
+    
+        // Assign "N/A" if status is missing
+        $status = $request->filled('status') ? $request->status : 'N/A';
+    
+        // Assign 0 if quantity is missing
+        $quantity = $request->filled('quantity') ? $request->quantity : 0;
+    
         // Insert into database
-        AccountabilityRecord::create($request->all());
-
+        AccountabilityRecord::create([
+            'id_number' => $request->id_number,
+            'name' => $request->name,
+            'date' => $request->date,
+            'quantity' => $quantity,
+            'description' => $request->description,
+            'ser_no' => $request->ser_no,
+            'status' => $status,
+        ]);
+    
         return redirect()->back()->with('success', 'Record added successfully!');
     }
 
@@ -76,10 +87,7 @@ class AccountabilityRecordsController extends Controller
             'id_number' => 'required|string',
             'name' => 'required|string',
             'date' => 'required|date',
-            'quantity' => 'required|integer',
-            'description' => 'required|string',
-            'ser_no' => 'required|string',
-            'status' => 'required|string',
+
         ]);
 
         $record->update($request->all());
