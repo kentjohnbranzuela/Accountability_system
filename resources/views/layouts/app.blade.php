@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackline</title>
     <!-- Loading Overlay -->
@@ -56,7 +57,7 @@
             text-decoration: none;
         }
         .sidebar a:hover {
-            background: #333;
+            background: #d0bcf6;
         }
         .content {
             margin-left: 260px;
@@ -176,7 +177,40 @@
     </style>
 </head>
 <body>
+<style>
+    .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+    padding: 10px 15px; /* Adjust padding inside the dropdown */
+    font-size: 16px; /* Ensure good readability */
+}
 
+.dropdown-item i {
+    font-size: 20px; /* Adjust icon size */
+}
+#techListMenu li, #broListMenu li, #gingoogsListMenu li, #bcGingoogMenu li, #bcCdoMenu li, #turnOverMenu li, #awolMenu li, #resignMenu li {
+    padding: 2px 2px; /* Adjust padding around list items */
+    margin-bottom: 5px; /* Adds spacing between list items */
+}
+
+/* Styling for dropdown links */
+#techListMenu li a, #broListMenu li a, #gingoogsListMenu li a, #bcGingoogMenu li a, #bcCdoMenu li a, #turnOverMenu li a, #awolMenu li a, #resignMenu li a {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    font-size: 16px; /* Ensures readability */
+    padding: 3px 15px; /* Adjust padding inside links */
+    border-radius: 6px; /* Optional: rounded corners */
+    background: #f0f0f0; /* Optional: light background */
+    text-decoration: none; /* Removes underline */
+}
+
+/* Hover effect for dropdown links */
+#techListMenu li a:hover, #broListMenu li a:hover, #gingoogsListMenu li a:hover, #bcGingoogMenu li a:hover, #bcCdoMenu li a:hover, #turnOverMenu li a:hover, #awolMenu li a:hover, #resignMenu li a:hover {
+    background: #ddd; /* Light hover effect */
+}
+</style>
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -185,96 +219,96 @@
         </a>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link">
-                    <i  class="fas fa-table"></i>📈 Dashboard
-                </a>
-            </li>
+    <a href="{{ route('dashboard') }}" class="nav-link">
+        <i class="fas fa-chart-line me-2"></i> Dashboard
+    </a>
+</li>
 
             <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
-        <i class="fas fa-folder"></i>📝 BRO LIST
+        <i class="fas fa-folder"></i> BRO LIST
     </a>
     <ul class="collapse list-unstyled" id="broListMenu">
-        <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link">BRO Records</a></li>
-        <li><a href="{{ url('/accountability') }}" class="nav-link">Add Records</a></li>
+        <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link"><i class="fa-solid fa-table"></i>BRO Records</a></li>
+        <li><a href="{{ url('/accountability') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
-        <i class="fas fa-folder"></i>🛠️ TECH LIST
+        <i class="fa-solid fa-screwdriver-wrench"></i> TECH LIST
     </a>
     <ul class="collapse list-unstyled" id="techListMenu">
-        <li><a href="{{ route('technician.records') }}" class="nav-link">TECH Records</a></li>
-        <li><a href="{{ route('technician.create') }}" class="nav-link">ADD Records</a></li>
+        <li><a href="{{ route('technician.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>TECH Records</a></li>
+        <li><a href="{{ route('technician.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
     </ul>
 </li>
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle" data-toggle="collapse" data-target="#bcGingoogMenu">
-        <i class="fas fa-folder"></i> 📌 BC-GINGOOG LIST
+        <i class="fa-solid fa-location-dot"></i>  BC-GINGOOG LIST
     </a>
     <ul class="collapse list-unstyled" id="bcGingoogMenu">
         <li>
-        <a href="{{ route('gingoogs.records') }}" class="nav-link">GINGOOG Records</a>
+        <a href="{{ route('gingoogs.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>GINGOOG Records</a>
         </li>
         <li>
-            <a href="{{ route('gingoogs.create') }}" class="nav-link">Add Records</a>
+            <a href="{{ route('gingoogs.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="bcCdoToggle">
-        <i class="fas fa-folder"></i>📌 BC-CDO LIST
+        <i class="fa-solid fa-location-dot"></i> BC-CDO LIST
     </a>
     <ul class="collapse list-unstyled" id="bcCdoMenu">
         <li>
-            <a href="#" class="nav-link">CDO Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link">Add Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="turnOverToggle">
-        <i class="fas fa-folder"></i>🔄 TURN-OVER LIST
+        <i class="fa-solid fa-rotate"></i> TURN-OVER LIST
     </a>
     <ul class="collapse list-unstyled" id="turnOverMenu">
         <li>
-            <a href="#" class="nav-link">T-O Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>T-O Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link">Add Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="awolToggle">
-        <i class="fas fa-folder"></i>🚫 AWOL LIST
+        <i class="fas fa-user"></i> AWOL LIST
     </a>
     <ul class="collapse list-unstyled" id="awolMenu">
         <li>
-            <a href="{#" class="nav-link">AWOL Records</a>
+            <a href="{#" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link">Add Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
 
 <li class="nav-item">
     <a href="#" class="nav-link dropdown-toggle" id="resignToggle">
-        <i class="fas fa-folder"></i>❌ RESIGN LIST
+        <i class="fas fa-user-minus"></i> RESIGN LIST
     </a>
     <ul class="collapse list-unstyled" id="resignMenu">
         <li>
-            <a href="#" class="nav-link">RESIGN Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link">Add Records</a>
+            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
@@ -294,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         dropdownToggle.addEventListener("click", function (event) {
             event.preventDefault();
-            
+
             // Toggle Bootstrap's collapse class
             if (dropdownMenu.classList.contains("show")) {
                 dropdownMenu.classList.remove("show");
@@ -336,11 +370,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span class="navbar-toggler-icon"></span>
             </button>
             <ul class="dropdown-menu navbar-dark dropdown-menu-end" aria-labelledby="userMenuButton">
-                <li><a class="dropdown-item" href="{{ route('account.info') }}">Account Information</a></li>
+                <li> <a class="dropdown-item" href="{{ route('account.info') }}"><i class="fa-regular fa-user"></i>Account Information</a></li>
                 <li>
                 <form action="{{ route('logout') }}" method="POST" id="logoutForm">
                     @csrf
-                    <button type="button" class="dropdown-item text-danger" id="logoutButton">Log Out</button>
+                    <button type="button" class="dropdown-item text-danger" id="logoutButton"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</button>
                 </form>
                 </li>
             </ul>

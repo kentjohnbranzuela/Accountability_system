@@ -28,7 +28,25 @@
         @endforeach
     </select>
 </form>
+<style>
+.btn-gradient {
+        background-color: #0bac00bd;
+        color: black;
+        border: none;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
 
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #183b2dbb, #183822);
+        color: white;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-gradient i {
+        margin-right: 2px;
+    }
+    </style>
         </form>
     </div>
           <!-- Search and Print Controls Section -->
@@ -42,12 +60,11 @@
         </div>
 
         <!-- Print Button -->
-        <button class="btn btn-success shadow-sm print-btn" onclick="prepareForPrint()">
-            <i class="fas fa-print"></i> Print Report
-        </button>
+        <button class="btn btn-gradient shadow-lg print-btn px-4 py-2 rounded-pill" onclick="prepareForPrint()">
+    <i class="fas fa-print"></i>  <strong>Print Report</strong>
+</button>
     </div>
 </div>
-
 
     <!-- Print Header (Visible Only in Print) -->
     <div class="print-header">

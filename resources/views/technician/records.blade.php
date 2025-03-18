@@ -170,7 +170,7 @@
                                     {{ $technician->ser_no ?? 'N/A' }}
                                 </td>
                                 <td>
-                                    <span class="badge 
+                                    <span class="badge
                                         {{ $technician->status == 'NEW' ? 'bg-success' : ($technician->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
                                         {{ $technician->status }}
                                     </span>
@@ -179,7 +179,7 @@
                                 <div class="btn-group">
                                     <a href="#" class="btn btn-sm btn-warning EditTechnician" data-id="{{ $technician->id }}">
                                         <i class="fas fa-edit"></i> Edit
-                                    </a>              
+                                    </a>
                                     <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm">
         @csrf
         @method('DELETE')

@@ -1,6 +1,7 @@
     @extends('layouts.app')
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     @section('content')
+
         <div class="container mt-4">
             <h2 class="text-primary">BRO Records</h2>
             <form action="{{ route('accountability.import') }}" method="POST" enctype="multipart/form-data" class="import-container">
@@ -21,7 +22,7 @@
             border: 1px solid #ddd;
             width: fit-content;
         }
-        
+
         .custom-file-input {
             display: none;
         }
@@ -34,7 +35,7 @@
             cursor: pointer;
             font-weight: bold;
         }
-        
+
         .import-btn {
             background: #28a745;
             border: none;
@@ -67,7 +68,7 @@
     }
     #Delete{
         margin-top: 5px; /* Space between search and delete button */
-        margin-left: 960px;
+        margin-left: 730px;
             text-align: left;
         background-color:  #007bff;
         border: none;
@@ -80,6 +81,7 @@
         color: white;
         cursor: pointer;
     }
+
     </style>
 
     <script>
@@ -105,79 +107,80 @@
     <form id="deleteform" action="{{ route('bro.deleteAll') }}" method="POST">
         @csrf
         @method('DELETE')
-        <button type="button" id="Delete" class="btn btn-danger">Delete All</button>
-    </form>
+<button type="button" id="Delete" class="btn btn-danger d-flex align-items-center gap-1">
+        <i class="fa-solid fa-trash"></i> Delete All
+    </button>    </form>
 </div>
-            <!-- Visible Table -->
-            <div class="card shadow-sm">
-        <div class="card-body">
-            <h4 class="mb-3 text-primary">BRO Records</h4>
+          <!-- Visible Table -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="mb-3 text-primary">BRO Records</h4>
 
-            <div class="table-responsive">
-                <table id="accountabilityTable" class="table table-striped table-hover">
-                    <thead class="table-dark text-center">
+        <div class="table-responsive">
+            <table id="accountabilityTable" class="table table-striped table-hover align-middle">
+                <thead class="table-dark text-center">
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                        <tr>
-                            <th>Position</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Quantity</th>
-                            <th>Description</th>
-                            <th>Serial No.</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                    <tr>
+                        <th style="width: 10%;">Position</th>
+                        <th style="width: 15%;">Name</th>
+                        <th style="width: 10%;">Date</th>
+                        <th style="width: 8%;">Quantity</th>
+                        <th style="width: 25%;">Description</th>
+                        <th style="width: 12%;">Serial No.</th>
+                        <th style="width: 10%;">Status</th>
+                        <th style="width: 10%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($records as $record)
+                        @php
+                            // Check if serial number is duplicate
+                            $isDuplicate = \App\Models\AccountabilityRecord::where('ser_no', $record->ser_no)->count() > 1;
+                        @endphp
+
+                        <tr class="text-center">
+                            <td>{{ $record->id_number }}</td>
+                            <td>{{ $record->name }}</td>
+                            <td>{{ $record->date ?? 'N/A' }}</td>
+                            <td>{{ $record->quantity }}</td>
+                            <td class="text-start">{{ $record->description }}</td>
+
+                            <!-- Highlight Serial Number in Red if Duplicate -->
+                            <td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
+                                {{ $record->ser_no ?? 'N/A' }}
+                            </td>
+
+                            <td>
+                                <span class="badge
+                                    {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
+                                    {{ $record->status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{{ route('accountability.edit', $record->id) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('accountability.destroy', $record->id) }}" method="POST" class="deleteForm d-inline-block m-0">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-sm btn-danger deleteButton">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-        @foreach ($records as $record)
-            @php
-                // Count how many times this serial number appears in the database
-                $isDuplicate = \App\Models\AccountabilityRecord::where('ser_no', $record->ser_no)->count() > 1;
-            @endphp
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-            <tr class="align-middle text-center">
-                <td>{{ $record->id_number }}</td>
-                <td>{{ $record->name }}</td>
-                <td>{{ $record->date ?? 'N/A' }}</td>
-                <td>{{ $record->quantity }}</td>
-                <td>{{ $record->description }}</td>
-
-                <!-- Highlight Serial Number in Red if Duplicate -->
-                <td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
-                    {{ $record->ser_no ?? 'N/A' }}
-                </td>
-
-                <td>
-                    <span class="badge 
-                        {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
-                        {{ $record->status }}
-                    </span>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a href="{{ route('accountability.edit', $record->id) }}" class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <form action="{{ route('accountability.destroy', $record->id) }}" method="POST" class="deleteForm">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-sm btn-danger deleteButton">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </form>
-                    </div>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-                </table>
-            </div>
-
-            <div class="d-flex justify-content-end mt-3">
-                {{ $records->links('pagination::bootstrap-4') }}
-            </div>
+        <div class="d-flex justify-content-end mt-3">
+            {{ $records->links('pagination::bootstrap-4') }}
         </div>
     </div>
+</div>
 
 
             <!-- Hidden Printable Receipt -->
@@ -240,7 +243,7 @@
 
             var printContents = document.getElementById("printableReceipt").innerHTML;
             var printWindow = window.open('', '', 'width=800,height=600');
-            
+
             printWindow.document.write('<html><head><title>Original Copy</title>');
             printWindow.document.write('<style>');
             printWindow.document.write('body { font-family: Arial, sans-serif; padding: 20px; }');
@@ -253,7 +256,7 @@
             printWindow.document.close();
             printWindow.print();
         }
-        
+
     </script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {

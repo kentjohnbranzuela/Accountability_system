@@ -11,19 +11,30 @@ class TechnicianImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
 {
-    \Log::info('Imported Row: ', $row); // Debugging line to check imported data
+    // Normalize column names (convert to lowercase and remove spaces/underscores)
+    $normalizedRow = [];
+    foreach ($row as $key => $value) {
+        $normalizedKey = strtolower(str_replace([' ', '_'], '', trim($key)));
+        $normalizedRow[$normalizedKey] = $value;
+    }
+
+    // Log column names to debug issues
+    \Log::info('Normalized Row: ', $normalizedRow);
 
     return new Technician([
-       'position'   => $row['position'] ?? null,
-        'name'        => $row['name'] ?? 'Unknown',
-        'date'        => isset($row['date']) ? $this->transformDate($row['date']) : now(),
-        'quantity'    => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
-        'description'  => empty($row['description']) ? 'N/A' : $row['description'], // FIXED: Replace empty/NULL with "N/A"
-        'ser_no' => empty($row['ser_no'] ?? $row['Serial No.'] ?? null) ? null : ($row['ser_no'] ?? $row['Serial No.']),
-        'status'      => $row['status'] ?? 'Unknown',
+        'position'   => $normalizedRow['idnumber'] ?? $normalizedRow['position'] ?? null,
+        'name'       => $normalizedRow['name'] ?? 'Unknown',
+        'date'       => isset($normalizedRow['date']) ? $this->transformDate($normalizedRow['date']) : now(),
+        'quantity'   => is_numeric($normalizedRow['quantity']) ? intval($normalizedRow['quantity']) : 0,
+        'description'=> empty($normalizedRow['description']) ? 'N/A' : $normalizedRow['description'],
 
+        // Handle multiple variations of 'ser_no'
+        'ser_no'     => $normalizedRow['serno'] ?? $normalizedRow['serialno'] ?? null,
+
+        'status'     => $normalizedRow['status'] ?? 'Unknown',
     ]);
 }
+
     /**
      * Convert Excel serial number or text date to a valid MySQL date format.
      */

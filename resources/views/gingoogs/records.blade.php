@@ -41,6 +41,32 @@
         display: block !important;
     }
 }
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
+}
+td, th {
+    word-wrap: break-word;
+    white-space: normal;
+}
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.d-flex.justify-content-end {
+    flex-wrap: wrap;
+    overflow-x: auto;
+}
+#edit {
+    padding: 5px; /* Adjust padding for a better fit */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
 </style>
 {{-- Hidden Printable Receipt --}}
 <div id="printableReceipt" style="display: none;">
@@ -96,67 +122,67 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 
 
     {{-- Gingoog Records Table --}}
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h4 class="mb-3 text-primary">Gingoog Records</h4>
-            <div class="table-responsive">
-                <table id="gingoogTable" class="table table-striped table-hover">
-                    <thead class="table-dark text-center">
-                        <tr>
-                            <th>Position</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Quantity</th>
-                            <th>Description</th>
-                            <th>Serial No</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+   <div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="mb-3 text-primary">Gingoog Records</h4>
+        <div class="table-responsive">
+            <table id="gingoogTable" class="table table-striped table-hover w-100" style="table-layout: fixed;">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th style="width: 10%;">Position</th>
+                        <th style="width: 15%;">Name</th>
+                        <th style="width: 10%;">Date</th>
+                        <th style="width: 10%;">Quantity</th>
+                        <th style="width: 20%;">Description</th>
+                        <th style="width: 15%;">Serial No</th>
+                        <th style="width: 10%;">Status</th>
+                        <th style="width: 20%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($gingoogRecords as $record)
+                        <tr class="align-middle text-center">
+                            <td>{{ $record->position }}</td>
+                            <td>{{ $record->name }}</td>
+                            <td>{{ $record->date ?? 'N/A' }}</td>
+                            <td>{{ $record->quantity }}</td>
+                            <td>{{ $record->description }}</td>
+                            <td>{{ $record->ser_no ?? 'N/A' }}</td>
+                            <td>
+                                <span class="badge {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
+                                    {{ $record->status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ route('gingoogs.edit', $record->id) }}" class="btn btn-sm btn-warning"
+                                        id="edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('gingoogs.destroy', $record->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($gingoogRecords as $record)
-                            <tr class="align-middle text-center">
-                                <td>{{ $record->position }}</td>
-                                <td>{{ $record->name }}</td>
-                                <td>{{ $record->date ?? 'N/A' }}</td>
-                                <td>{{ $record->quantity }}</td>
-                                <td>{{ $record->description }}</td>
-                                <td>{{ $record->ser_no ?? 'N/A' }}</td>
-                                <td>
-                                    <span class="badge {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
-                                        {{ $record->status }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="{{ route('gingoogs.edit', $gingoog->id) }}" class="btn btn-sm btn-warning EditRecord">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <form action="{{ route('gingoogs.destroy', $record->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-sm btn-danger DeleteRecord">
-                                                <i class="fas fa-trash-alt"></i> Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            {{-- Pagination --}}
-            <div class="d-flex justify-content-end mt-3">
-                {{ $gingoogRecords->links('pagination::bootstrap-4') }}
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        {{-- Pagination --}}
+        <div class="d-flex justify-content-end mt-3">
+            {{ $gingoogRecords->links('pagination::bootstrap-4') }}
         </div>
     </div>
 </div>
 <style>
 #Delete{
         margin-top: 5px; /* Space between search and delete button */
-        margin-left: 960px;
+        margin-left: 755px;
             text-align: left;
         background-color:  #007bff;
         border: none;
