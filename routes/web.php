@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountabilityRecordsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\GingoogController;
+use App\Http\Controllers\CdoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,18 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::post('/gingoogs/store', [GingoogController::class, 'store'])->name('gingoogs.store');
     Route::delete('/gingoogs/{id}', [GingoogController::class, 'destroy'])->name('gingoogs.destroy');
     Route::post('/gingoogs/import', [GingoogController::class, 'import'])->name('gingoogs.import');
+
+    //CDO
+    Route::post('/cdos/import', [CdoController::class, 'importExcel'])->name('cdos.import');
+    Route::get('/cdos/export', [CdoController::class, 'export'])->name('cdos.export');
+    Route::match(['post', 'delete'], '/cdos/delete-all', [CdoController::class, 'deleteAll'])->name('cdos.deleteAll');
+    Route::get('/cdos', [CdoController::class, 'records'])->name('cdos.records');
+    Route::get('/cdos/create', [CdoController::class, 'create'])->name('cdos.create');
+    Route::post('/cdos/store', [CdoController::class, 'store'])->name('cdos.store');
+    Route::get('/cdos/{id}/edit', [CdoController::class, 'edit'])->name('cdos.edit');
+    Route::put('/cdos/{id}', [CdoController::class, 'update'])->name('cdos.update');
+    Route::delete('/cdos/{id}', [CdoController::class, 'destroy'])->name('cdos.destroy');
+    Route::get('/cdos/check-data', [CdoController::class, 'checkData'])->name('cdos.checkData');
 });
   
    

@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div class="container mt-4">
     <h2 class="text-primary">Gingoog Records</h2>
 
     {{-- File Upload and Search --}}
-    <form action="{{ route('gingoogs.import') }}"  id="ImportForm" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('gingoogs.import') }}" id="ImportForm" method="POST" enctype="multipart/form-data"
     class="import-container p-2 border rounded d-inline-flex align-items-center gap-2" style="max-width: 500px;">
     @csrf
     <div class="d-flex align-items-center">
@@ -14,9 +15,12 @@
         </label>
         <input type="file" name="file" id="file-upload" class="d-none" required onchange="updateFileName()">
         <span id="file-name" class="ms-2 text-dark fw-bold">No file chosen</span>
-    <button type="submit" class="btn btn-success">
-        📥 Import Excel
-    </button>
+        
+        <!-- ✅ Add id="Import" to the button -->
+        <button type="submit" class="btn btn-success" id="Import">
+            📥 Import Excel
+        </button>
+    </div>
 </form>
 </div>
     {{-- Search Bar --}}
@@ -29,7 +33,7 @@
 
     {{-- Print and Export Buttons --}}
 <button onclick="printTable()" class="btn btn-primary mb-3">🖨️ Print Table</button>
-<a href="{{ route('gingoogs.export') }}" class="btn btn-primary mb-3">📤 Export to Excel</a>
+<a href="{{ route('gingoogs.export') }}" class="btn btn-primary mb-3" id="ExportButton">📤 Export to Excel</a>
 
 <style>
     @media print {
@@ -40,31 +44,6 @@
         object-fit: cover !important;
         display: block !important;
     }
-}
-.table-responsive {
-    overflow-x: auto;
-    max-width: 100%;
-    white-space: nowrap;
-}
-td, th {
-    word-wrap: break-word;
-    white-space: normal;
-}
-.btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-.d-flex.justify-content-end {
-    flex-wrap: wrap;
-    overflow-x: auto;
-}
-#edit {
-    padding: 5px; /* Adjust padding for a better fit */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; /* Prevents text from wrapping */
 }
 
 </style>
@@ -81,7 +60,6 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 
     <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
         <thead>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <tr>
                 <th style="border: 1px solid black; padding: 5px;">Date</th>
                 <th style="border: 1px solid black; padding: 5px;">Quantity</th>
@@ -122,52 +100,60 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 
 
     {{-- Gingoog Records Table --}}
-   <div class="card shadow-sm">
-    <div class="card-body">
-        <h4 class="mb-3 text-primary">Gingoog Records</h4>
-        <div class="table-responsive">
-            <table id="gingoogTable" class="table table-striped table-hover w-100" style="table-layout: fixed;">
-                <thead class="table-dark text-center">
-                    <tr>
-                        <th style="width: 10%;">Position</th>
-                        <th style="width: 15%;">Name</th>
-                        <th style="width: 10%;">Date</th>
-                        <th style="width: 10%;">Quantity</th>
-                        <th style="width: 20%;">Description</th>
-                        <th style="width: 15%;">Serial No</th>
-                        <th style="width: 10%;">Status</th>
-                        <th style="width: 20%;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($gingoogRecords as $record)
-                        <tr class="align-middle text-center">
-                            <td>{{ $record->position }}</td>
-                            <td>{{ $record->name }}</td>
-                            <td>{{ $record->date ?? 'N/A' }}</td>
-                            <td>{{ $record->quantity }}</td>
-                            <td>{{ $record->description }}</td>
-                            <td>{{ $record->ser_no ?? 'N/A' }}</td>
-                            <td>
-                                <span class="badge {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
-                                    {{ $record->status }}
-                                </span>
-                            </td>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-3 text-primary">Gingoog Records</h4>
+
+            <div class="table-responsive">
+                <table id="gingoogTable" class="table table-striped table-hover">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>Position</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                            <th>Description</th>
+                            <th>Ser_No</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($gingoogRecords as $record)
+                            @php
+                                // Check for duplicate serial number
+                                $isDuplicate = \App\Models\Gingoog::where('ser_no', $record->ser_no)->count() > 1;
+                            @endphp
+                            <tr class="align-middle text-center">
+                                <td>{{ $record->position }}</td>
+                                <td>{{ $record->name }}</td>
+                                <td>{{ $record->date ?? 'N/A' }}</td>
+                                <td>{{ $record->quantity }}</td>
+                                <td>{{ $record->description }}</td>
+                                <td style="color: {{ $isDuplicate ? 'red' : 'black' }};">
+                                    {{ $record->ser_no ?? 'N/A' }}
+                                </td>
+                                <td>
+                                    <span class="badge
+                                        {{ $record->status == 'NEW' ? 'bg-success' : ($record->status == 'Unknown' ? 'bg-secondary' : 'bg-warning') }}">
+                                        {{ $record->status }}
+                                    </span>
+                                </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('gingoogs.edit', $record->id) }}" class="btn btn-sm btn-warning"
-                                        id="edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('gingoogs.destroy', $record->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+    <a href="{{ route('gingoogs.edit', $record->id) }}" class="btn btn-sm btn-warning EditTechnician me-1" data-id="{{ $gingoog->id }}">
+        <i class="fas fa-edit"></i>
+    </a>
+    <form action="{{ route('gingoogs.destroy', $record->id) }}" method="POST" class="deleteForm ms-1">
+        @csrf
+        @method('DELETE')
+        <button type="button" class="btn btn-sm btn-danger deleteButton">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </form>
+</div>
+
+                                </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -198,16 +184,17 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 </style>
 {{-- JavaScript for print --}}
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Function to format the date
     function formatDate() {
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return today.toLocaleDateString(undefined, options);
     }
 
+    // ✅ Function to handle printing
     function printTable() {
-        // Update the Date Received field
         document.getElementById("date-received").textContent = formatDate();
-
         const printContents = document.getElementById("printableReceipt").innerHTML;
         const printWindow = window.open('', '', 'width=800,height=600');
 
@@ -219,83 +206,195 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
         printWindow.document.close();
         printWindow.print();
     }
-</script>
-{{-- JavaScript for Alerts and Actions --}}
-<script>
-    //import button
-    function updateFileName() {
-        var input = document.getElementById('file-upload');
-        var fileNameSpan = document.getElementById('file-name');
-        if (input.files.length > 0) {
-            fileNameSpan.textContent = input.files[0].name;
-        } else {
-            fileNameSpan.textContent = "No file chosen";
-        }
-    }
-    //sweet alert
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".DeleteRecord").forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault();
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "This record will be permanently deleted!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.closest("form").submit();
-                    }
-                });
-            });
-        });
 
-        document.getElementById("Delete").addEventListener("click", function (event) {
+    // ✅ Delete Single Record with SweetAlert
+    document.querySelectorAll(".DeleteRecord").forEach(button => {
+        button.addEventListener("click", function (event) {
             event.preventDefault();
             Swal.fire({
                 title: "Are you sure?",
-                text: "All records will be permanently deleted!",
+                text: "This record will be permanently deleted!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
                 cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, delete all!"
+                confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById("deleteForm").submit();
+                    this.closest("form").submit();
                 }
             });
         });
     });
-    document.getElementById('ImportForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Para hindi agad mag-submit
 
+    let deleteButton = document.getElementById("Delete");
+    let deleteForm = document.getElementById("deleteForm");
+
+    deleteButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        // ✅ Dynamically count rows inside the table
+        let tableRows = document.querySelectorAll("#gingoogTable tbody tr");
+
+        if (tableRows.length === 0) {
+            Swal.fire({
+                title: "No Records to Delete!",
+                text: "There are no records available to delete.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
+
+        // ✅ Confirmation before deleting
         Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to import this Excel file?",
-            icon: 'warning',
+            title: "Are you sure?",
+            text: "All records will be permanently deleted!",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, import it!'
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete all!"
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Importing...',
-                    text: 'Please wait while we process your file.',
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
+                fetch(deleteForm.action, {
+                    method: 'POST',
+                    body: new FormData(deleteForm),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "All records have been deleted.", "success")
+                            .then(() => location.reload()); // ✅ Refresh page after deletion
+                    } else {
+                        Swal.fire("Error!", "Something went wrong.", "error");
                     }
+                }).catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire("Error!", "Something went wrong.", "error");
                 });
-                // Pag confirmed, tuloy ang submission
-                event.target.submit();
             }
         });
     });
+   });
+   document.addEventListener("DOMContentLoaded", function () {
+    console.log("JavaScript loaded successfully!"); // ✅ Debugging log
+
+    let importButton = document.querySelector("#Import");
+    let fileInput = document.querySelector("#file-upload");
+    let fileNameDisplay = document.querySelector("#file-name");
+    let importForm = document.querySelector("#ImportForm");
+
+    // ✅ Function to update file name display
+    window.updateFileName = function () {
+        if (fileInput.files.length > 0) {
+            let fileName = fileInput.files[0].name;
+            fileNameDisplay.textContent = fileName;
+        } else {
+            fileNameDisplay.textContent = "No file chosen";
+        }
+    };
+
+    if (importButton && fileInput) {
+        importButton.addEventListener("click", function (event) {
+            event.preventDefault(); // ✅ Prevent default form submission
+
+            // ✅ Check if a file is selected
+            if (!fileInput.files.length) {
+                Swal.fire({
+                    title: "No File Selected!",
+                    text: "Please choose an Excel or CSV file before importing.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // ✅ Validate file extension (only .xls, .xlsx, .csv)
+            let fileName = fileInput.files[0].name;
+            let allowedExtensions = /(\.xls|\.xlsx|\.csv)$/i;
+
+            if (!allowedExtensions.exec(fileName)) {
+                Swal.fire({
+                    title: "Invalid File Type!",
+                    text: "Please upload an Excel (.xls, .xlsx) or CSV (.csv) file.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                fileInput.value = ""; // Reset input
+                fileNameDisplay.textContent = "No file chosen";
+                return;
+            }
+
+            // ✅ Show confirmation popup before importing
+            Swal.fire({
+                title: "Import File?",
+                text: "Are you sure you want to import this file?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Import it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ✅ Show success alert
+                    Swal.fire({
+                        title: "Importing...",
+                        text: "Your file is being processed.",
+                        icon: "success",
+                        timer: 2000, // Auto-close after 2 seconds
+                        showConfirmButton: false
+                    });
+
+                    // ✅ Submit the form
+                    importForm.submit();
+                }
+            });
+        });
+    } else {
+        console.error("Import button or file input not found!"); // ✅ Debugging log
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let exportButton = document.querySelector("#ExportButton");
+    
+    if (exportButton) {
+        exportButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default export
+
+            // ✅ Count table rows dynamically
+            let tableRows = document.querySelectorAll("#gingoogTable tbody tr");
+            console.log("Export Table Rows Count:", tableRows.length); // ✅ Debugging log
+
+            if (tableRows.length === 0) {
+                // ✅ If no data, show an alert and prevent export
+                Swal.fire({
+                    title: "No Data to Export!",
+                    text: "There are no records available to export.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // ✅ Show confirmation popup before exporting
+            Swal.fire({
+                title: "Export Data?",
+                text: "Are you sure you want to export the data to Excel?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Export it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("Exporting data..."); // ✅ Debugging log
+                    window.location.href = exportButton.href; // ✅ Proceed with export
+                }
+            });
+        });
+    } else {
+        console.error("Export button not found!"); // ✅ Debugging log
+    }
+});
 </script>
 @endsection

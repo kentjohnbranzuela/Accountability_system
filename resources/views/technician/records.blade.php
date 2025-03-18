@@ -177,18 +177,18 @@
                                 </td>
                                 <td>
                                 <div class="btn-group">
-                                    <a href="#" class="btn btn-sm btn-warning EditTechnician" data-id="{{ $technician->id }}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm">
+    <a href="#" class="btn btn-sm btn-warning EditTechnician me-1" data-id="{{ $technician->id }}">
+        <i class="fas fa-edit"></i>
+    </a>
+    <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm ms-1">
         @csrf
         @method('DELETE')
         <button type="button" class="btn btn-sm btn-danger deleteButton">
-            <i class="fas fa-trash-alt"></i> Delete
+            <i class="fas fa-trash-alt"></i>
         </button>
     </form>
+</div>
 
-                                    </div>
                                 </td>
                             </tr>
                         @endforeach

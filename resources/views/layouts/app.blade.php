@@ -263,10 +263,10 @@
     </a>
     <ul class="collapse list-unstyled" id="bcCdoMenu">
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a>
+        <a href="{{ route('cdos.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
+            <a href="{{ route('cdos.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>
