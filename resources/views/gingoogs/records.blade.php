@@ -15,7 +15,7 @@
         </label>
         <input type="file" name="file" id="file-upload" class="d-none" required onchange="updateFileName()">
         <span id="file-name" class="ms-2 text-dark fw-bold">No file chosen</span>
-        
+
         <!-- ✅ Add id="Import" to the button -->
         <button type="submit" class="btn btn-success" id="Import">
             📥 Import Excel
@@ -90,17 +90,17 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 </div>
 
     {{-- Delete All Button --}}
-    <div class="mt-2 text-center">
+    <div class="delete-container">
     <form id="deleteForm" action="{{ url('/gingoogs/delete-all') }}" method="POST">
         @csrf
         @method('DELETE')
-        <button type="submit" id="Delete" class="btn btn-danger">Delete All</button>
+        <button type="submit" id="Delete" class="btn btn-danger"> <i class="fa-solid fa-trash" style="margin-right: 5px;"></i> Delete All</button>
     </form>
 </div>
 
 
     {{-- Gingoog Records Table --}}
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id="gingoogTable">
         <div class="card-body">
             <h4 class="mb-3 text-primary">Gingoog Records</h4>
 
@@ -166,21 +166,30 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
     </div>
 </div>
 <style>
-#Delete{
-        margin-top: 5px; /* Space between search and delete button */
-        margin-left: 755px;
-            text-align: left;
-        background-color:  #007bff;
-        border: none;
-        font-weight: bold;
-        border-radius: 5px;
-    }
-    #Delete:hover{
-        background-color:rgba(0, 123, 255, 0.88);
-        transition: background-color 0.2s ease;
-        color: white;
-        cursor: pointer;
-    }
+ #Delete {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #0075ea; /* Red color */
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#Delete:hover {
+    background-color: rgba(220, 53, 69, 0.85); /* Hover effect */
+    transition: background-color 0.2s ease;
+}
+
+/* Center the delete button below the search bar */
+.delete-container {
+    display: flex;
+    justify-content: left; /* Align to the right */
+    margin-bottom: 10px; /* Align to the right */
+}
+
 </style>
 {{-- JavaScript for print --}}
 <script>
@@ -208,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ✅ Delete Single Record with SweetAlert
-    document.querySelectorAll(".DeleteRecord").forEach(button => {
+    document.querySelectorAll(".deleteform").forEach(button => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
             Swal.fire({
@@ -230,12 +239,23 @@ document.addEventListener("DOMContentLoaded", function () {
     let deleteButton = document.getElementById("Delete");
     let deleteForm = document.getElementById("deleteForm");
 
+    function updateDeleteButtonState() {
+        let tableRows = document.querySelectorAll("#gingoogTable tbody tr");
+
+        if (tableRows.length === 0) {
+            deleteButton.disabled = true;  // Disable if no records
+        } else {
+            deleteButton.disabled = false; // Enable if records exist
+        }
+    }
+
+    // Run check on page load and after AJAX changes (if applicable)
+    updateDeleteButtonState();
+
     deleteButton.addEventListener("click", function (event) {
         event.preventDefault();
 
-        // ✅ Dynamically count rows inside the table
         let tableRows = document.querySelectorAll("#gingoogTable tbody tr");
-
         if (tableRows.length === 0) {
             Swal.fire({
                 title: "No Records to Delete!",
@@ -246,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // ✅ Confirmation before deleting
         Swal.fire({
             title: "Are you sure?",
             text: "All records will be permanently deleted!",
@@ -275,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-   });
+});
    document.addEventListener("DOMContentLoaded", function () {
     console.log("JavaScript loaded successfully!"); // ✅ Debugging log
 
@@ -356,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 document.addEventListener("DOMContentLoaded", function () {
     let exportButton = document.querySelector("#ExportButton");
-    
+
     if (exportButton) {
         exportButton.addEventListener("click", function (event) {
             event.preventDefault(); // Prevent default export

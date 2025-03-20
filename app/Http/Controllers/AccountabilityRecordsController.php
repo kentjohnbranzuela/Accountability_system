@@ -52,13 +52,13 @@ class AccountabilityRecordsController extends Controller
             'date' => 'required|date',
             'quantity' => 'nullable|integer', // Allow quantity to be nullable but must be an integer if provided
         ]);
-    
+
         // Assign "N/A" if status is missing
         $status = $request->filled('status') ? $request->status : 'N/A';
-    
+
         // Assign 0 if quantity is missing
         $quantity = $request->filled('quantity') ? $request->quantity : 0;
-    
+
         // Insert into database
         AccountabilityRecord::create([
             'id_number' => $request->id_number,
@@ -69,8 +69,8 @@ class AccountabilityRecordsController extends Controller
             'ser_no' => $request->ser_no,
             'status' => $status,
         ]);
-    
-        return redirect()->back()->with('success', 'Record added successfully!');
+
+        return redirect()->route('accountability.accountability_records')->with('success', 'Record added successfully!');
     }
 
     public function edit($id)

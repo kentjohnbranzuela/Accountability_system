@@ -6,11 +6,11 @@
     <h2 class="text-primary">CDO Records</h2>
 
     {{-- File Upload and Search --}}
-  <form action="{{ route('cdos.import') }}" 
-    id="ImportForm" 
-    method="POST" 
+  <form action="{{ route('cdos.import') }}"
+    id="ImportForm"
+    method="POST"
     enctype="multipart/form-data"
-    class="import-container p-2 border rounded d-inline-flex align-items-center gap-2" 
+    class="import-container p-2 border rounded d-inline-flex align-items-center gap-2"
     style="max-width: 500px;">
     @csrf
     <div class="d-flex align-items-center">
@@ -38,7 +38,7 @@
     <a href="{{ route('cdos.export') }}" class="btn btn-primary mb-3" id="exportExcel">📤 Export to Excel</a>
 
     {{-- Delete All Button --}}
-    <div class="mt-2 text-center">
+    <div class="delete-container">
     <form id="deleteForm" action="{{ route('cdos.deleteAll') }}" method="POST">
     @csrf
     @method('DELETE')
@@ -158,7 +158,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     let exportButton = document.querySelector("#exportExcel"); // ✅ Updated to match your export button
-    
+
     if (exportButton) {
         exportButton.addEventListener("click", function (event) {
             event.preventDefault(); // Prevent default export
@@ -317,13 +317,35 @@
 });
 document.addEventListener("DOMContentLoaded", function () {
     let deleteButton = document.getElementById("Delete");
+    let tableBody = document.querySelector("#cdoTable tbody"); // Ensure correct table ID
 
+    // ✅ Check if the delete button or table exists
+    if (!deleteButton || !tableBody) {
+        console.error("❌ Delete button or table body not found!");
+        return;
+    }
+
+    function updateDeleteButtonState() {
+        let tableRows = tableBody.querySelectorAll("tr");
+
+        if (tableRows.length === 0) {
+            deleteButton.disabled = true;
+            console.log("❌ No data found, disabling delete button.");
+        } else {
+            deleteButton.disabled = false;
+            console.log("✅ Data found, delete button enabled.");
+        }
+    }
+
+    // ✅ Run on page load
+    updateDeleteButtonState();
+
+    // ✅ Handle delete button click
     deleteButton.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        // ✅ Check if table has data before deleting
-        let tableRows = document.querySelectorAll("#cdoTable tbody tr"); // Ginawang tama ang ID
-
+        // If no data, show alert and return
+        let tableRows = tableBody.querySelectorAll("tr");
         if (tableRows.length === 0) {
             Swal.fire({
                 title: "No Records to Delete!",
@@ -334,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // ✅ Show confirmation popup before deleting
+        // Show confirmation dialog
         Swal.fire({
             title: "Are you sure?",
             text: "All records will be permanently deleted!",
@@ -345,14 +367,15 @@ document.addEventListener("DOMContentLoaded", function () {
             confirmButtonText: "Yes, delete all!"
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(document.getElementById('deleteForm').action, {
+                // ✅ Use fetch API to submit form asynchronously
+                fetch(deleteForm.action, {
                     method: 'POST',
-                    body: new FormData(document.getElementById('deleteForm')),
+                    body: new FormData(deleteForm),
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 }).then(response => {
                     if (response.ok) {
                         Swal.fire("Deleted!", "All records have been deleted.", "success")
-                            .then(() => location.reload()); // ✅ Refresh page after deletion
+                            .then(() => location.reload()); // ✅ Refresh after deletion
                     } else {
                         Swal.fire("Error!", "Something went wrong.", "error");
                     }
@@ -366,20 +389,28 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <style>
-    #Delete{
-        margin-top: 5px; /* Space between search and delete button */
-        margin-left: 890px;
-            text-align: left;
-        background-color:  #007bff;
-        border: none;
-        font-weight: bold;
-        border-radius: 5px;
-    }
-    #Delete:hover{
-        background-color:rgba(0, 123, 255, 0.88);
-        transition: background-color 0.2s ease;
-        color: white;
-        cursor: pointer;
-    }
+    #Delete {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #0075ea; /* Red color */
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#Delete:hover {
+    background-color: rgba(220, 53, 69, 0.85); /* Hover effect */
+    transition: background-color 0.2s ease;
+}
+
+/* Center the delete button below the search bar */
+.delete-container {
+    display: flex;
+    justify-content: left;
+    margin-bottom: 10px; /* Align to the right */
+}
 </style>
 @endsection

@@ -277,10 +277,10 @@
     </a>
     <ul class="collapse list-unstyled" id="turnOverMenu">
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>T-O Records</a>
+            <a href="{{ route('turnover.records') }}" class="nav-link"><i class="fa-solid fa-rotate"></i>T-O Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
+            <a href="{{ route('turnover.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>

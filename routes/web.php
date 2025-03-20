@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountabilityRecordsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\TurnOverController;
 use App\Http\Controllers\GingoogController;
 use App\Http\Controllers\CdoController;
 use App\Http\Controllers\AuthController;
@@ -33,7 +34,7 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::delete('/accountability/{id}', [AccountabilityRecordsController::class, 'destroy'])->name('accountability.destroy');
     Route::get('/export-BRO', [AccountabilityRecordsController::class, 'exportExcel'])->name('export.BRO');
     Route::delete('/Bro/delete-all', [AccountabilityRecordsController::class, 'deleteAll'])->name('bro.deleteAll');
-    
+
     //auth
     Route::get('/account-info', [AuthController::class, 'accountInfo'])->name('account.info');
     Route::get('/account-info', [AuthController::class, 'accountInfo'])->name('account.info');
@@ -72,15 +73,26 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::put('/cdos/{id}', [CdoController::class, 'update'])->name('cdos.update');
     Route::delete('/cdos/{id}', [CdoController::class, 'destroy'])->name('cdos.destroy');
     Route::get('/cdos/check-data', [CdoController::class, 'checkData'])->name('cdos.checkData');
+
+    //Turn=Over
+    Route::post('/import-turnovers', [TurnOverController::class, 'importExcel'])->name('import.turnovers');
+    Route::delete('/turnover/delete-all', [TurnOverController::class, 'deleteAll'])->name('turnover.deleteAll');
+Route::get('/turnover/records', [TurnOverController::class, 'records'])->name('turnover.records');
+route::delete('/turnover-destroy', [TurnOverController::class, 'destroy'])->name('turnover.destroy');
+Route::post('/turnover-update', [TurnOverController::class, 'updateAccount'])->name('turnover.update');
+Route::get('/turnover/create', [TurnOverController::class, 'create'])->name('turnover.create');
+Route::post('/turnover/store', [TurnOverController::class, 'store'])->name('turnover.store');
+Route::get('/export-turnovers', [TurnOverController::class, 'exportExcel'])->name('export.turnovers');
+Route::resource('turnover', TurnOverController::class);
 });
-  
-   
-   
+
+
+
 
     // Import Route
     Route::post('/import-excel', [AccountabilityRecordsController::class, 'importExcel'])->name('accountability.import');
     Route::post('/technician/import', [TechnicianController::class, 'importExcel'])->name('technician.import');
 
 
-   
+
 

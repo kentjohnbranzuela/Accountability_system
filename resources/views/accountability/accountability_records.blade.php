@@ -66,21 +66,30 @@
         object-fit: cover; /* Ensures the image maintains its aspect ratio */
         border: 2px solid #ccc; /* Optional: Add a border around the logo */
     }
-    #Delete{
-        margin-top: 5px; /* Space between search and delete button */
-        margin-left: 730px;
-            text-align: left;
-        background-color:  #007bff;
-        border: none;
-        font-weight: bold;
-        border-radius: 5px;
-    }
-    #Delete:hover{
-        background-color:rgba(0, 123, 255, 0.88);
-        transition: background-color 0.2s ease;
-        color: white;
-        cursor: pointer;
-    }
+    #Delete {
+    margin-top: 10px; /* Space between search bar and delete button */
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #0075ea; /* Red color */
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#Delete:hover {
+    background-color: rgba(220, 53, 69, 0.85); /* Hover effect */
+    transition: background-color 0.2s ease;
+}
+
+/* Center the delete button below the search bar */
+.delete-container {
+    display: flex;
+    justify-content: right; /* Align to the right */
+    margin-top: 10px; /* Add some spacing */
+}
 
     </style>
 
@@ -121,14 +130,14 @@
                 <thead class="table-dark text-center">
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     <tr>
-                        <th style="width: 10%;">Position</th>
-                        <th style="width: 15%;">Name</th>
-                        <th style="width: 10%;">Date</th>
-                        <th style="width: 8%;">Quantity</th>
-                        <th style="width: 25%;">Description</th>
-                        <th style="width: 12%;">Serial No.</th>
-                        <th style="width: 10%;">Status</th>
-                        <th style="width: 10%;">Actions</th>
+                            <th>Position</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                            <th style="width: 0%;">Description</th>
+                            <th>Ser_No</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -259,46 +268,113 @@
 
     </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
     let deleteButton = document.getElementById("Delete");
+    let tableBody = document.querySelector("#accountabilityTable tbody"); // ✅ Correct table ID
 
-    if (deleteButton) {
-        deleteButton.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent auto-submission
+    function updateDeleteButtonState() {
+        if (!deleteButton) {
+            console.error("❌ Delete button not found!");
+            return;
+        }
 
-            Swal.fire({
-                title: "Are you sure?",
-                text: "This will delete all records permanently!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // ✅ Submit the form
-                    document.getElementById("deleteform").submit();
+        if (!tableBody) {
+            console.error("❌ Table body not found!");
+            return;
+        }
 
-                    // ✅ Show success alert after deletion
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "All records have been deleted successfully.",
-                        icon: "success",
-                        timer: 2000, // Auto-close after 2 seconds
-                        showConfirmButton: false
-                    });
-                }
-            });
-        });
+        let tableRows = tableBody.querySelectorAll("tr");
+
+        if (tableRows.length === 0) {
+            deleteButton.disabled = true;
+            console.log("❌ No data found, disabling delete button.");
+        } else {
+            deleteButton.disabled = false;
+            console.log("✅ Data found, delete button enabled.");
+        }
     }
+
+    // Run on page load to check initial state
+    updateDeleteButtonState();
+
+    // ✅ Re-check when data changes (for dynamic updates)
+    const observer = new MutationObserver(updateDeleteButtonState);
+    observer.observe(tableBody, { childList: true });
+
+    deleteButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        console.log("✅ Delete button clicked!");
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will delete all records permanently!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let deleteForm = document.getElementById("deleteform"); // ✅ Get form again
+                if (!deleteForm) {
+                    console.error("❌ Delete form not found!");
+                    Swal.fire("Error", "Delete form not found!", "error");
+                    return;
+                }
+
+                console.log("✅ Form submitted!");
+                deleteForm.submit();
+            }
+        });
+    });
 });
 document.addEventListener("DOMContentLoaded", function () {
     let importButton = document.querySelector(".import-btn");
+    let fileInput = document.querySelector("#file-upload");
+    let fileNameDisplay = document.querySelector("#file-name");
+
+    // ✅ Function to update file name display
+    window.updateFileName = function () {
+        if (fileInput.files.length > 0) {
+            let fileName = fileInput.files[0].name;
+            fileNameDisplay.textContent = fileName;
+        } else {
+            fileNameDisplay.textContent = "No file chosen";
+        }
+    };
 
     if (importButton) {
         importButton.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent auto-submit
+            event.preventDefault(); // Prevent form from submitting automatically
 
+            // ✅ Check if a file is selected
+            if (!fileInput.files.length) {
+                Swal.fire({
+                    title: "No File Selected!",
+                    text: "Please choose an Excel (.xls, .xlsx) or CSV file before importing.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // ✅ Validate file extension (only .xls, .xlsx, .csv)
+            let fileName = fileInput.files[0].name;
+            let allowedExtensions = /(\.xls|\.xlsx|\.csv)$/i;
+
+            if (!allowedExtensions.exec(fileName)) {
+                Swal.fire({
+                    title: "Invalid File Type!",
+                    text: "Please upload an Excel (.xls, .xlsx) or CSV (.csv) file.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                fileInput.value = ""; // Reset input
+                fileNameDisplay.textContent = "No file chosen";
+                return;
+            }
+
+            // ✅ Show confirmation popup before importing
             Swal.fire({
                 title: "Import Excel?",
                 text: "Are you sure you want to import this file?",
@@ -327,38 +403,45 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    let exportButton = document.querySelector("#exportExcel");
+    let exportButton = document.querySelector("#exportExcel"); // ✅ Updated to match your export button
 
     if (exportButton) {
         exportButton.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent immediate navigation
+            event.preventDefault(); // Prevent default export
 
+            // ✅ Count table rows dynamically for #cdoTable
+            let tableRows = document.querySelectorAll("#accountabilityTable tbody tr");
+            console.log("Export Table Rows Count:", tableRows.length); // ✅ Debugging log
+
+            if (tableRows.length === 0) {
+                // ✅ If no data, show an alert and prevent export
+                Swal.fire({
+                    title: "No Data to Export!",
+                    text: "There are no records available to export.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // ✅ Show confirmation popup before exporting
             Swal.fire({
                 title: "Export Data?",
-                text: "Do you want to download the Excel file?",
-                icon: "info",
+                text: "Are you sure you want to export the data to Excel?",
+                icon: "question",
                 showCancelButton: true,
-                confirmButtonColor: "#007bff",
+                confirmButtonColor: "#28a745",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, Export it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // ✅ Show success alert
-                    Swal.fire({
-                        title: "Exporting...",
-                        text: "Your Excel file is being prepared.",
-                        icon: "success",
-                        timer: 1500, // Auto-close after 1.5 seconds
-                        showConfirmButton: false
-                    });
-
-                    // ✅ Redirect after the success alert
-                    setTimeout(() => {
-                        window.location.href = exportButton.href; // Proceed with export
-                    }, 1500);
+                    console.log("Exporting data..."); // ✅ Debugging log
+                    window.location.href = exportButton.href; // ✅ Proceed with export
                 }
             });
         });
+    } else {
+        console.error("Export button not found!"); // ✅ Debugging log
     }
 });
 document.addEventListener("DOMContentLoaded", function () {
