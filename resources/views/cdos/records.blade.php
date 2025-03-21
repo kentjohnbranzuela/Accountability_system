@@ -105,7 +105,6 @@
             </div>
         </div>
     </div>
-</div>
 <!-- Hidden Printable Receipt -->
 <div id="printableReceipt" style="display: none;">
     <!-- Logo -->

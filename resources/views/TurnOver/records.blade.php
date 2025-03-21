@@ -151,6 +151,50 @@
                 margin-bottom: 10px;
                 /* Align to the right */
             }
+            #turnoverTable  {
+   font-weight: 500;
+    font-size: 14px;
+}
+            /* Adjust spacing for Position and Name */
+#turnoverTable td:nth-child(1),  /* Position column */
+#turnoverTable td:nth-child(2) {  /* Name column */
+    white-space: nowrap; /* Prevents unnecessary wrapping */
+    overflow: hidden;
+    max-width: 150px; /* Adjust width as needed */
+    flex-direction: column; /* Stack text vertically */
+    align-items: center; /* Center-align text */
+    text-align: center;
+    white-space: normal; /* Allow text wrapping */
+    max-width: 120px; /* Set max width para hindi lumobo */
+    word-break: break-word;
+
+}
+
+/* Reduce table padding for a compact look */
+#turnoverTable th, #turnoverTable td {
+    padding: 4px 6px; /* Less padding to reduce space */
+    font-size: 13px; /* Make text readable but compact */
+}
+
+/* Align text properly */
+#turnoverTable td {
+    vertical-align: middle; /* Ensures text is centered */
+}
+
+/* Make the description wrap properly */
+#turnoverTable td:nth-child(5) {
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Keep actions and status compact */
+#turnoverTable td:nth-child(7),
+#turnoverTable td:nth-child(8) {
+    text-align: center;
+    width: 80px;
+}
+
+
         </style>
     </div>
 
@@ -173,7 +217,7 @@
             <h4 class="mb-3 text-primary">Turn Over Records</h4>
 
             <div class="table-responsive">
-                <table id="turnoverTable" class="table table-striped table-hover">
+                <table id="turnoverTable" class="table table-sm table-striped table-hover">
                     <thead class="table-dark text-center">
                         <tr>
                             <th>Position</th>

@@ -156,7 +156,7 @@
     </form>
 </div>
     {{-- Technician Records Table --}}
-    <div class="card shadow-sm" id="technicianTable">
+    <div class="card shadow-sm">
         <div class="card-body">
             <h4 class="mb-3 text-primary">Technician Records</h4>
 
@@ -201,14 +201,14 @@
     <a href="#" class="btn btn-sm btn-warning EditTechnician me-1" data-id="{{ $technician->id }}">
         <i class="fas fa-edit"></i>
     </a>
-    <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm ms-1">
-        @csrf
-        @method('DELETE')
-        <button type="button" class="btn btn-sm btn-danger deleteButton">
-            <i class="fas fa-trash-alt"></i>
-        </button>
-    </form>
-</div>
+                                <form action="{{ route('technician.destroy', $technician->id) }}" method="POST" class="deleteForm ms-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-danger deleteButton">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
 
                                 </td>
                             </tr>

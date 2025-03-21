@@ -2,44 +2,27 @@
 
 namespace App\Imports;
 
-use App\Models\Technician;
+use App\Models\ResignRecord;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
-class TechnicianImport implements ToModel, WithHeadingRow
+class ResignImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
-{
-    // Normalize column names (convert to lowercase and remove spaces/underscores)
-    $normalizedRow = [];
-    foreach ($row as $key => $value) {
-        $normalizedKey = strtolower(str_replace([' ', '_'], '', trim($key)));
-        $normalizedRow[$normalizedKey] = $value;
+    {
+        return new ResignRecord([
+            'position'   => $row['position'] ?? null,
+            'name'       => $row['name'] ?? 'Unknown',
+            'date'       => isset($row['date']) ? $this->transformDate($row['date']) : now(),
+            'quantity'   => is_numeric($row['quantity']) ? intval($row['quantity']) : 0,
+            'description'=> empty($row['description']) ? 'N/A' : $row['description'],
+            'ser_no' => empty($row['serial_no']) || $row['serial_no'] === 'N/A' ? null : $row['serial_no'],
+            'status'     => $row['status'] ?? 'Unknown',
+        ]);
     }
 
-    // Log column names to debug issues
-    \Log::info('Normalized Row: ', $normalizedRow);
-
-    return new Technician([
-        'position'   => $normalizedRow['idnumber'] ?? $normalizedRow['position'] ?? null,
-        'name'       => $normalizedRow['name'] ?? 'Unknown',
-        'date'       => isset($normalizedRow['date']) ? $this->transformDate($normalizedRow['date']) : now(),
-        'quantity'   => is_numeric($normalizedRow['quantity']) ? intval($normalizedRow['quantity']) : 0,
-        'description'=> empty($normalizedRow['description']) ? 'N/A' : $normalizedRow['description'],
-
-        // Handle multiple variations of 'ser_no'
-        'ser_no'     => $normalizedRow['serno'] ?? $normalizedRow['serialno'] ?? null,
-
-        'status'     => $normalizedRow['status'] ?? 'Unknown',
-    ]);
-}
-
-    /**
-     * Convert Excel serial number or text date to a valid MySQL date format.
-     */
     public function transformDate($date)
     {
         if (!$date) {
@@ -77,4 +60,3 @@ class TechnicianImport implements ToModel, WithHeadingRow
         return null; // Return null if none of the formats work
     }
 }
-

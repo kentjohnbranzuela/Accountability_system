@@ -7,6 +7,7 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\TurnOverController;
 use App\Http\Controllers\GingoogController;
 use App\Http\Controllers\CdoController;
+use App\Http\Controllers\ResignRecordController;
 use App\Http\Controllers\AwolRecordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
@@ -97,6 +98,18 @@ Route::put('/awol/{awolRecord}', [AwolRecordController::class, 'update'])->name(
 Route::get('/awol/check-data', [AwolRecordController::class, 'checkData'])->name('awol.checkData');
 Route::get('/export-awol', [AwolRecordController::class, 'exportExcel'])->name('export.awol');
 Route::resource('awol', AwolRecordController::class);
+
+//Resign
+Route::get('/resign/records', [ResignRecordController::class, 'records'])->name('resign.records');
+Route::post('/resign/import', [ResignRecordController::class, 'importExcel'])->name('resign.import');
+Route::delete('/resign/delete-all', [ResignRecordController::class, 'deleteAll'])->name('resign.deleteAll');
+Route::get('/resign/create', [ResignRecordController::class, 'create'])->name('resign.create');
+Route::post('/resign/store', [ResignRecordController::class, 'store'])->name('resign.store');
+Route::get('/resign/{resignRecord}/edit', [ResignRecordController::class, 'edit'])->name('resign.edit');
+Route::put('/resign/{resignRecord}', [ResignRecordController::class, 'update'])->name('resign.update');
+Route::get('/resign/check-data', [ResignRecordController::class, 'checkData'])->name('resign.checkData');
+Route::get('/export-resign', [ResignRecordController::class, 'exportExcel'])->name('export.resign');
+Route::resource('resign', ResignRecordController::class);
 });
 
 

@@ -304,10 +304,10 @@
     </a>
     <ul class="collapse list-unstyled" id="resignMenu">
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a>
+            <a href="{{ route('resign.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
+            <a href="{{ route('resign.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>

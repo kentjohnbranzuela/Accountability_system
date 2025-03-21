@@ -12,7 +12,7 @@ class CdoImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         \Log::info('Importing row: ' . json_encode($row));
-    
+
         return new Cdo([
             'position'      => $this->sanitizePosition($row),
             'name'          => $row['name'] ?? 'UNKNOWN',
