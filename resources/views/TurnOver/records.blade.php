@@ -5,6 +5,7 @@
         <h2 class="text-primary">Turn Over Records</h2>
 
         {{-- File Upload and Search --}}
+        <div class="d-flex justify-content-between" id="importContainer">
         <form id="importForm" action="{{ route('import.turnovers') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" id="fileUpload" class="d-none" accept=".xlsx, .csv">
@@ -18,7 +19,7 @@
                 📥 <strong>Import Excel</strong>
             </button>
         </form>
-
+        </div>
         {{-- Search --}}
         <form method="GET" action="{{ route('turnover.records') }}">
             <div class="input-group">
@@ -28,6 +29,19 @@
             </div>
         </form>
         <style>
+            #importContainer {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                /* Adjust spacing */
+                margin-bottom: 10px;
+                padding: 5px;
+                border-radius: 5px;
+                background: #f8f9fa;
+                border: 1px solid #ddd;
+                width: fit-content;
+                justify-content: space-between;
+            }
             .record-header {
                 display: flex;
                 align-items: center;

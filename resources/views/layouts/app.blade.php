@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('12.png') }}">
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -11,8 +12,6 @@
     <div class="spinner"></div>
     <p>Loading...</p>
 </div>
-    <link rel="icon" type="image/jpeg" href="{{ asset('2.jpg') }}">
- <!-- Change filename if needed -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         /* Sidebar Styles */
@@ -291,10 +290,10 @@
     </a>
     <ul class="collapse list-unstyled" id="awolMenu">
         <li>
-            <a href="{#" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a>
+            <a href="{{ route('awol.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a>
         </li>
         <li>
-            <a href="#" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
+            <a href="{{ route('awol.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
         </li>
     </ul>
 </li>

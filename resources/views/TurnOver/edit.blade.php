@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h2 class="text-primary">Edit CDO Record</h2>
+        <h2 class="text-primary">Edit Turn Over Record</h2>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         {{-- ✅ Display success message --}}

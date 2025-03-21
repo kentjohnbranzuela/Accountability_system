@@ -40,12 +40,33 @@ class TurnOverController extends Controller
     TurnOver::truncate();
     return redirect()->route('turnover.records')->with('success', 'All Turn Over records deleted.');
 }
+ public function records(Request $request)
+    {
+        $query = TurnOver::query();
+
+        // Check if there's a search input
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('position', 'LIKE', "%$search%")
+                  ->orWhere('name', 'LIKE', "%$search%")
+                  ->orWhere('description', 'LIKE', "%$search%")
+                  ->orWhere('ser_no', 'LIKE', "%$search%")
+                  ->orWhere('status', 'LIKE', "%$search%");
+            });
+        }
+
+        // Fetch records with pagination
+        $turnovers = $query->paginate(30); // Adjust pagination as needed
+
+        return view('turnover.records', compact('turnovers'));
+    }
 // Show All Records
-public function records()
-{
-    $turnovers = TurnOver::paginate(10); // Paginate the results, change 10 to desired items per page
-    return view('turnover.records', compact('turnovers'));
-}
+// public function records()
+// {
+//     $turnovers = TurnOver::paginate(10); // Paginate the results, change 10 to desired items per page
+//     return view('turnover.records', compact('turnovers'));
+// }
 // Update Account
 public function updateAccount(Request $request, $id)
 {

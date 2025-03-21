@@ -32,10 +32,22 @@
     </form>
 
     {{-- Print and Export Buttons --}}
+    <div class="d-flex align-items-center" id="printContainer">
 <button onclick="printTable()" class="btn btn-primary mb-3">🖨️ Print Table</button>
 <a href="{{ route('gingoogs.export') }}" class="btn btn-primary mb-3" id="ExportButton">📤 Export to Excel</a>
-
+</div>
 <style>
+    #printContainer {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        /* Adjust spacing */
+        margin-bottom: 10px;
+        padding: 5px;
+        border-radius: 5px;
+        width: fit-content;
+        justify-content: space-between;
+    }
     @media print {
     .print-logo {
         width: 100px !important;
@@ -191,6 +203,8 @@ style="width: 100px !important; height: 100px !important; border-radius: 50% !im
 }
 
 </style>
+
+</script>
 {{-- JavaScript for print --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -202,19 +216,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ✅ Function to handle printing
-    function printTable() {
-        document.getElementById("date-received").textContent = formatDate();
-        const printContents = document.getElementById("printableReceipt").innerHTML;
-        const printWindow = window.open('', '', 'width=800,height=600');
+    window.printTable = function() {
+    console.log("printTable() function is being called!"); // Debugging
 
-        printWindow.document.write('<html><head><title>Gingoog Records</title>');
-        printWindow.document.write('<style>body { font-family: Arial, sans-serif; padding: 20px; }</style></head><body>');
-        printWindow.document.write(printContents);
-        printWindow.document.write('</body></html>');
+    document.getElementById("date-received").textContent = formatDate();
+    const printContents = document.getElementById("printableReceipt").innerHTML;
+    const printWindow = window.open('', '', 'width=800,height=600');
 
-        printWindow.document.close();
-        printWindow.print();
-    }
+    printWindow.document.write('<html><head><title>Gingoog Records</title>');
+    printWindow.document.write('<style>body { font-family: Arial, sans-serif; padding: 20px; }</style></head><body>');
+    printWindow.document.write(printContents);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close();
+    printWindow.print();
+};
 
     // ✅ Delete Single Record with SweetAlert
     document.querySelectorAll(".deleteform").forEach(button => {

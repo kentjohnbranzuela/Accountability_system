@@ -7,6 +7,7 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\TurnOverController;
 use App\Http\Controllers\GingoogController;
 use App\Http\Controllers\CdoController;
+use App\Http\Controllers\AwolRecordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,18 @@ Route::get('/turnover/create', [TurnOverController::class, 'create'])->name('tur
 Route::post('/turnover/store', [TurnOverController::class, 'store'])->name('turnover.store');
 Route::get('/export-turnovers', [TurnOverController::class, 'exportExcel'])->name('export.turnovers');
 Route::resource('turnover', TurnOverController::class);
+
+//AWOL
+Route::get('/awol/records', [AwolRecordController::class, 'records'])->name('awol.records');
+Route::post('/awol/import', [AwolRecordController::class, 'import'])->name('awol.import');
+Route::delete('/awol/delete-all', [AwolRecordController::class, 'deleteAll'])->name('awol.deleteAll');
+Route::get('/awol/create', [AwolRecordController::class, 'create'])->name('awol.create');
+Route::post('/awol/store', [AwolRecordController::class, 'store'])->name('awol.store');
+Route::get('/awol/{awolRecord}/edit', [AwolRecordController::class, 'edit'])->name('awol.edit');
+Route::put('/awol/{awolRecord}', [AwolRecordController::class, 'update'])->name('awol.update');
+Route::get('/awol/check-data', [AwolRecordController::class, 'checkData'])->name('awol.checkData');
+Route::get('/export-awol', [AwolRecordController::class, 'exportExcel'])->name('export.awol');
+Route::resource('awol', AwolRecordController::class);
 });
 
 

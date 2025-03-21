@@ -25,6 +25,17 @@
             </div>
         </form>
         <style>
+            #printContainer {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                /* Adjust spacing */
+                margin-bottom: 10px;
+                padding: 5px;
+                border-radius: 5px;
+                width: fit-content;
+                justify-content: space-between;
+            }
     .record-header {
         display: flex;
         align-items: center;
@@ -133,8 +144,10 @@
     </div>
 
     {{-- Print Button --}}
+    <div class="d-flex align-items-center" id="printContainer">
     <button onclick="printTable()" class="btn btn-primary mb-3">🖨️ Print Table</button>
     <a href="{{ route('export.technicians') }}" id="exportexcel" class="btn btn-primary mb-3">📤 Export to Excel</a>
+</div>
     <div class="delete-container">
     <form id="deleteForm" action="{{ route('technician.deleteAll') }}" method="POST">
         @csrf
@@ -364,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // ✅ Validate file extension (only .xlsx and .csv allowed)
             let fileName = fileInput.files[0].name;
-            let allowedExtensions = /(\.xlsx|\.csv)$/i;
+            let allowedExtensions = /(\.xls|\.xlsx|\.csv)$/i;
 
             if (!allowedExtensions.exec(fileName)) {
                 Swal.fire({

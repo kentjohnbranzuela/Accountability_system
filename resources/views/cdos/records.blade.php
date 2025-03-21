@@ -13,7 +13,7 @@
     class="import-container p-2 border rounded d-inline-flex align-items-center gap-2"
     style="max-width: 500px;">
     @csrf
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center" id="importContainer">
         <label for="file-upload" class="btn btn-primary mb-0">
             📂 Choose File
         </label>
@@ -389,6 +389,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <style>
+    #importContainer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        /* Adjust spacing */
+        padding: 5px;
+        border-radius: 5px;
+        width: fit-content;
+        justify-content: space-between;
+    }
     #Delete {
     display: inline-block;
     padding: 10px 20px;
