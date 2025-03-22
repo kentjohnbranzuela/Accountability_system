@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TurnOver extends Model
 {
     use HasFactory;
-
+    protected $table = 'turn_overs';
     protected $fillable = [
         'position',
         'name',

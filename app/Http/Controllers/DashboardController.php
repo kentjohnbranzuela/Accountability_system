@@ -6,65 +6,78 @@ use Illuminate\Http\Request;
 use App\Models\AccountabilityRecord;
 use App\Models\Gingoog;
 use App\Models\Technician;
+use App\Models\Cdo;
+use App\Models\TurnOver;
+use App\Models\AwolRecord;
+use App\Models\ResignRecord;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-   public function dashboard(Request $request)
+    public function dashboard(Request $request)
 {
-    // Fetch available years from all tables
-    $years = AccountabilityRecord::selectRaw('YEAR(date) as year')
-        ->union(Gingoog::selectRaw('YEAR(date) as year'))
-        ->union(Technician::selectRaw('YEAR(date) as year'))
-        ->distinct()
-        ->orderBy('year', 'desc')
-        ->pluck('year');
+    // Fetch available years, handling NULL dates
+    $years = collect([
+        AccountabilityRecord::class,
+        Gingoog::class,
+        Technician::class,
+        Cdo::class,
+        TurnOver::class,
+        AwolRecord::class,
+        ResignRecord::class,
+    ])->flatMap(fn($model) => $model::whereNotNull('date')
+        ->selectRaw('DISTINCT YEAR(date) as year')
+        ->pluck('year'))
+      ->unique()
+      ->sortDesc()
+      ->values();
 
     // Get selected year and source from request
-    $selectedYear = $request->input('year', $years->first() ?? now()->year);
-    $selectedSource = $request->input('source', null); // Default to "All Sources"
+    $selectedYear = $request->input('year', null);
+    $selectedSource = $request->input('source', null);
 
-    // Initialize data queries
-    $accountabilityQuery = AccountabilityRecord::whereYear('date', $selectedYear)
-        ->selectRaw('description, SUM(quantity) as count, "Accountability" as source')
-        ->groupBy('description');
+    // Define models and sources
+    $models = [
+        'BRO' => AccountabilityRecord::class,
+        'Gingoog' => Gingoog::class,
+        'Technician' => Technician::class,
+        'BC-CDO LIST' => Cdo::class,
+        'TURN-OVER LIST' => TurnOver::class,
+        'AWOL LIST' => AwolRecord::class,
+        'RESIGN-LIST' => ResignRecord::class,
+    ];
 
-    $gingoogQuery = Gingoog::whereYear('date', $selectedYear)
-        ->selectRaw('description, SUM(quantity) as count, "Gingoog" as source')
-        ->groupBy('description');
-
-    $technicianQuery = Technician::whereYear('date', $selectedYear)
-        ->selectRaw('description, SUM(quantity) as count, "Technician" as source')
-        ->groupBy('description');
-
-    // Apply source filter if a specific source is selected
-    if ($selectedSource) {
-        if ($selectedSource === 'Accountability') {
-            $gingoogQuery = collect(); // Empty the other datasets
-            $technicianQuery = collect();
-        } elseif ($selectedSource === 'Gingoog') {
-            $accountabilityQuery = collect();
-            $technicianQuery = collect();
-        } elseif ($selectedSource === 'Technician') {
-            $accountabilityQuery = collect();
-            $gingoogQuery = collect();
-        }
+    // Count per category (for dashboard boxes)
+    $dataCounts = [];
+    foreach ($models as $source => $model) {
+        $dataCounts[$source] = $model::count();
     }
 
-    // Retrieve data from database
-    $accountabilityData = is_a($accountabilityQuery, 'Illuminate\Database\Eloquent\Builder') ? $accountabilityQuery->get() : $accountabilityQuery;
-    $gingoogData = is_a($gingoogQuery, 'Illuminate\Database\Eloquent\Builder') ? $gingoogQuery->get() : $gingoogQuery;
-    $technicianData = is_a($technicianQuery, 'Illuminate\Database\Eloquent\Builder') ? $technicianQuery->get() : $technicianQuery;
+    // Filter if specific source is selected
+    if ($selectedSource && $selectedSource !== 'All Records') {
+        $models = array_filter($models, fn($key) => $key === $selectedSource, ARRAY_FILTER_USE_KEY);
+    }
 
-    // Merge all filtered data collections
-    $mergedData = $accountabilityData->concat($gingoogData)->concat($technicianData);
+    // Execute queries
+    $mergedData = collect();
+    foreach ($models as $source => $model) {
+        $query = $model::selectRaw('description, SUM(quantity) as count, ? as source, YEAR(date) as year', [$source])
+            ->groupBy('description', 'year');
 
-    // Fetch unique sources for the dropdown
-    $sources = ['Accountability', 'Gingoog', 'Technician', 'BC-CDO LIST', 'TURN-OVER LIST', 'AWOL LIST', 'RESIGN LIST'];
+        if ($selectedYear) {
+            $query->whereYear('date', $selectedYear);
+        }
 
-    // If no records exist, display a message
+        $mergedData = $mergedData->concat($query->get());
+    }
+
+    // Fetch unique sources for dropdown
+    $sources = array_keys($models);
+
+    // Message when no records are found
     $message = $mergedData->isEmpty() ? "No records found for year: $selectedYear and source: $selectedSource" : null;
 
-    return view('dashboard', compact('mergedData', 'selectedYear', 'selectedSource', 'years', 'sources', 'message'));
+    return view('dashboard', compact('mergedData', 'selectedYear', 'selectedSource', 'years', 'sources', 'message', 'dataCounts'));
 }
 
 }
