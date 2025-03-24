@@ -3,6 +3,9 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\TechnicianMiddleware;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\SessionAuth;
 
 class Kernel extends HttpKernel
 {
@@ -40,9 +43,10 @@ class Kernel extends HttpKernel
     /**
      * The application's route middleware.
      */
-    protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.session' => \App\Http\Middleware\SessionAuth::class, // Add custom session middleware here
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-    ];
+   protected $routeMiddleware = [
+    'auth' => \App\Http\Middleware\Authenticate::class,
+        'technician' => \App\Http\Middleware\TechnicianMiddleware::class,
+    'auth.session' => \App\Http\Middleware\SessionAuth::class,
+    'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+];
 }

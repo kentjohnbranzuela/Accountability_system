@@ -5,16 +5,17 @@ use App\Http\Controllers\AccountabilityRecordsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\TurnOverController;
+use App\Http\Controllers\ToolsRequestController;
 use App\Http\Controllers\GingoogController;
 use App\Http\Controllers\CdoController;
 use App\Http\Controllers\ResignRecordController;
 use App\Http\Controllers\AwolRecordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SessionAuth;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; // Import Auth Facade
+
 
 // Public Routes
-
 Route::get('/', function () {
     return redirect()->route('dashboard'); // Redirect to dashboard if logged in
 });
@@ -50,8 +51,6 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::get('/technician/create', [TechnicianController::class, 'create'])->name('technician.create');
     Route::post('/technician/store', [TechnicianController::class, 'store'])->name('technician.store');
     Route::get('/export-technicians', [TechnicianController::class, 'exportExcel'])->name('export.technicians');
-    Route::resource('technician', TechnicianController::class);
-
     //gingoog
     Route::get('/gingoogs/export', [GingoogController::class, 'export'])->name('gingoogs.export');
     Route::delete('/gingoogs/delete-all', [GingoogController::class, 'deleteAll'])->name('gingoogs.deleteAll');
@@ -85,32 +84,41 @@ Route::post('/turnover-update', [TurnOverController::class, 'updateAccount'])->n
 Route::get('/turnover/create', [TurnOverController::class, 'create'])->name('turnover.create');
 Route::post('/turnover/store', [TurnOverController::class, 'store'])->name('turnover.store');
 Route::get('/export-turnovers', [TurnOverController::class, 'exportExcel'])->name('export.turnovers');
-Route::resource('turnover', TurnOverController::class);
-
 //AWOL
 Route::get('/awol/records', [AwolRecordController::class, 'records'])->name('awol.records');
 Route::post('/awol/import', [AwolRecordController::class, 'import'])->name('awol.import');
 Route::delete('/awol/delete-all', [AwolRecordController::class, 'deleteAll'])->name('awol.deleteAll');
 Route::get('/awol/create', [AwolRecordController::class, 'create'])->name('awol.create');
+Route::delete('/awol/{id}', [AwolRecordController::class, 'destroy'])->name('awol.destroy');
 Route::post('/awol/store', [AwolRecordController::class, 'store'])->name('awol.store');
 Route::get('/awol/{awolRecord}/edit', [AwolRecordController::class, 'edit'])->name('awol.edit');
 Route::put('/awol/{awolRecord}', [AwolRecordController::class, 'update'])->name('awol.update');
 Route::get('/awol/check-data', [AwolRecordController::class, 'checkData'])->name('awol.checkData');
 Route::get('/export-awol', [AwolRecordController::class, 'exportExcel'])->name('export.awol');
-Route::resource('awol', AwolRecordController::class);
-
 //Resign
 Route::get('/resign/records', [ResignRecordController::class, 'records'])->name('resign.records');
 Route::post('/resign/import', [ResignRecordController::class, 'importExcel'])->name('resign.import');
 Route::delete('/resign/delete-all', [ResignRecordController::class, 'deleteAll'])->name('resign.deleteAll');
 Route::get('/resign/create', [ResignRecordController::class, 'create'])->name('resign.create');
 Route::post('/resign/store', [ResignRecordController::class, 'store'])->name('resign.store');
+Route::delete('/resign/{id}', [ResignRecordController::class, 'destroy'])->name('resign.destroy');
 Route::get('/resign/{resignRecord}/edit', [ResignRecordController::class, 'edit'])->name('resign.edit');
 Route::put('/resign/{resignRecord}', [ResignRecordController::class, 'update'])->name('resign.update');
 Route::get('/resign/check-data', [ResignRecordController::class, 'checkData'])->name('resign.checkData');
 Route::get('/export-resign', [ResignRecordController::class, 'exportExcel'])->name('export.resign');
-Route::resource('resign', ResignRecordController::class);
-});
+//Tools Request
+Route::get('/toolsrequest/records', [ToolsRequestController::class, 'records'])->name('toolsrequest.records');
+Route::post('/toolsrequest/import', [ToolsRequestController::class, 'importExcel'])->name('toolsrequest.import');
+Route::delete('/toolsrequest/delete-all', [ToolsRequestController::class, 'deleteAll'])->name('toolsrequest.deleteAll');
+Route::delete('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'destroy'])
+    ->name('toolsrequest.destroy');
+Route::get('/toolsrequest/create', [ToolsRequestController::class, 'create'])->name('toolsrequest.create');
+Route::post('/toolsrequest/store', [ToolsRequestController::class, 'store'])->name('toolsrequest.store');
+Route::get('/toolsrequest/{toolsrequest}/edit', [ToolsRequestController::class, 'edit'])->name('toolsrequest.edit');
+Route::put('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'update'])->name('toolsrequest.update');
+Route::get('/toolsrequest/check-data', [ToolsRequestController::class, 'checkData'])->name('toolsrequest.checkData');
+Route::get('/export-toolsrequests', [ToolsRequestController::class, 'exportExcel'])->name('export.toolsrequests');});
+
 
 
 

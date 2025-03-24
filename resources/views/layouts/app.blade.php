@@ -211,108 +211,116 @@
 }
 </style>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <a class="navbar-brand d-flex align-items-center" href="">
-            <img src="{{ asset('2.jpg') }}" alt="Logo"> <!-- Make sure '2.jpg' is in the 'public' folder -->
-        </a>
-        <ul class="nav flex-column">
+   <!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <a class="navbar-brand d-flex align-items-center" href="">
+        <img src="{{ asset('2.jpg') }}" alt="Logo">
+    </a>
+
+    <ul class="nav flex-column">
+        @if(Auth::check() && Auth::user()->email === 'admin@blackline.com')
+            <!-- Show All Menus for Admin -->
             <li class="nav-item">
-    <a href="{{ route('dashboard') }}" class="nav-link">
-        <i class="fas fa-chart-line me-2"></i> Dashboard
-    </a>
-</li>
+                <a href="{{ route('dashboard') }}" class="nav-link">
+                    <i class="fas fa-chart-line me-2"></i> Dashboard
+                </a>
+            </li>
 
             <li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
-        <i class="fas fa-folder"></i> BRO LIST
-    </a>
-    <ul class="collapse list-unstyled" id="broListMenu">
-        <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link"><i class="fa-solid fa-table"></i>BRO Records</a></li>
-        <li><a href="{{ url('/accountability') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
-    </ul>
-</li>
+                <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
+                    <i class="fas fa-folder"></i> BRO LIST
+                </a>
+                <ul class="collapse list-unstyled" id="broListMenu">
+                    <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link"><i class="fa-solid fa-table"></i>BRO Records</a></li>
+                    <li><a href="{{ url('/accountability') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
-        <i class="fa-solid fa-screwdriver-wrench"></i> TECH LIST
-    </a>
-    <ul class="collapse list-unstyled" id="techListMenu">
-        <li><a href="{{ route('technician.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>TECH Records</a></li>
-        <li><a href="{{ route('technician.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
-    </ul>
-</li>
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle" data-toggle="collapse" data-target="#bcGingoogMenu">
-        <i class="fa-solid fa-location-dot"></i>  BC-GINGOOG LIST
-    </a>
-    <ul class="collapse list-unstyled" id="bcGingoogMenu">
-        <li>
-        <a href="{{ route('gingoogs.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>GINGOOG Records</a>
-        </li>
-        <li>
-            <a href="{{ route('gingoogs.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
-        </li>
-    </ul>
-</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> TECH LIST
+                </a>
+                <ul class="collapse list-unstyled" id="techListMenu">
+                    <li><a href="{{ route('technician.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>TECH Records</a></li>
+                    <li><a href="{{ route('technician.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="bcCdoToggle">
-        <i class="fa-solid fa-location-dot"></i> BC-CDO LIST
-    </a>
-    <ul class="collapse list-unstyled" id="bcCdoMenu">
-        <li>
-        <a href="{{ route('cdos.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a>
-        </li>
-        <li>
-            <a href="{{ route('cdos.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
-        </li>
-    </ul>
-</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle">
+                    <i class="fa-solid fa-location-dot"></i>  BC-GINGOOG LIST
+                </a>
+                <ul class="collapse list-unstyled" id="bcGingoogMenu">
+                    <li><a href="{{ route('gingoogs.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>GINGOOG Records</a></li>
+                    <li><a href="{{ route('gingoogs.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="turnOverToggle">
-        <i class="fa-solid fa-rotate"></i> TURN-OVER LIST
-    </a>
-    <ul class="collapse list-unstyled" id="turnOverMenu">
-        <li>
-            <a href="{{ route('turnover.records') }}" class="nav-link"><i class="fa-solid fa-rotate"></i>T-O Records</a>
-        </li>
-        <li>
-            <a href="{{ route('turnover.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
-        </li>
-    </ul>
-</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="bcCdoToggle">
+                    <i class="fa-solid fa-location-dot"></i> BC-CDO LIST
+                </a>
+                <ul class="collapse list-unstyled" id="bcCdoMenu">
+                    <li><a href="{{ route('cdos.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a></li>
+                    <li><a href="{{ route('cdos.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="awolToggle">
-        <i class="fas fa-user"></i> AWOL LIST
-    </a>
-    <ul class="collapse list-unstyled" id="awolMenu">
-        <li>
-            <a href="{{ route('awol.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a>
-        </li>
-        <li>
-            <a href="{{ route('awol.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
-        </li>
-    </ul>
-</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="turnOverToggle">
+                    <i class="fa-solid fa-rotate"></i> TURN-OVER LIST
+                </a>
+                <ul class="collapse list-unstyled" id="turnOverMenu">
+                    <li><a href="{{ route('turnover.records') }}" class="nav-link"><i class="fa-solid fa-rotate"></i>T-O Records</a></li>
+                    <li><a href="{{ route('turnover.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-<li class="nav-item">
-    <a href="#" class="nav-link dropdown-toggle" id="resignToggle">
-        <i class="fas fa-user-minus"></i> RESIGN LIST
-    </a>
-    <ul class="collapse list-unstyled" id="resignMenu">
-        <li>
-            <a href="{{ route('resign.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a>
-        </li>
-        <li>
-            <a href="{{ route('resign.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a>
-        </li>
-    </ul>
-</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="awolToggle">
+                    <i class="fas fa-user"></i> AWOL LIST
+                </a>
+                <ul class="collapse list-unstyled" id="awolMenu">
+                    <li><a href="{{ route('awol.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a></li>
+                    <li><a href="{{ route('awol.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
 
-    </div>
+            <li class="nav-item">
+                <a href="#" class="nav-link dropdown-toggle" id="resignToggle">
+                    <i class="fas fa-user-minus"></i> RESIGN LIST
+                </a>
+                <ul class="collapse list-unstyled" id="resignMenu">
+                    <li><a href="{{ route('resign.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a></li>
+                    <li><a href="{{ route('resign.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+                </ul>
+            </li>
+        @endif
+
+       @if(Auth::check())
+    @if(Auth::user()->email === 'admin@blackline.com')
+        <li class="nav-item">
+            <a href="#" class="nav-link dropdown-toggle" id="toolsRequestQAToggle">
+                <i class="fas fa-tools"></i> Tools Request QA
+            </a>
+            <ul class="collapse list-unstyled" id="toolsRequestQAMenu">
+                <li><a href="{{ route('toolsrequest.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>Tools Records</a></li>
+            </ul>
+        </li>
+    @elseif(Auth::user()->email === 'tech@blackline.com')
+        <li class="nav-item">
+            <a href="#" class="nav-link dropdown-toggle" id="toolsRequestQAToggle">
+                <i class="fas fa-tools"></i> Tools Request QA
+            </a>
+            <ul class="collapse list-unstyled" id="toolsRequestQAMenu">
+                <li><a href="{{ route('toolsrequest.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>Tools Records</a></li>
+                <li><a href="{{ route('toolsrequest.create') }}" class="nav-link"><i class="fa-solid fa-plus"></i>ADD Records</a></li>
+            </ul>
+        </li>
+    @endif
+@endif
+    </ul>
+</div>
     <script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {

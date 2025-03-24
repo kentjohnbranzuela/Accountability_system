@@ -9,8 +9,8 @@
     <style>
        body {
         color: black !important;
-        background: 
-        url("{{ asset('21.png') }}") no-repeat center center fixed, 
+        background:
+        url("{{ asset('21.png') }}") no-repeat center center fixed,
         linear-gradient(135deg, rgb(61, 0, 81), rgb(106, 212, 250));
     background-size: contain, cover; /* 'contain' keeps the logo visible */
     height: 100vh;
@@ -88,7 +88,7 @@ label[for="remember"] {
 </head>
 <body>
 @if(session('success'))
-    <div class="alert alert-success text-center" 
+    <div class="alert alert-success text-center"
          style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 50%;">
         {{ session('success') }}
     </div>

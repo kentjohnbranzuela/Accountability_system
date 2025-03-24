@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class GingoogController extends Controller
 {
-    
+
     public function records(Request $request)
 {
     $query = Gingoog::query();
@@ -47,30 +47,33 @@ class GingoogController extends Controller
 
     // Store a new record
     public function store(Request $request)
-    {
-        $request->validate([
-            'position' => 'nullable|string', 
-            'name' => 'required|string',
-            'date' => 'required|date',
-            'quantity' => 'nullable|integer|min:0', // Ensure quantity is an integer
-            'description' => 'nullable|string',
-            'ser_no' => 'nullable|string',
-            'status' => 'nullable|string',
-        ]);
-    
-        // Store data with default values
+{
+    // Validate input
+    $request->validate([
+        'position.*' => 'required|string',
+        'name.*' => 'required|string',
+        'date.*' => 'required|date',
+        'quantity.*' => 'nullable|integer',
+        'description.*' => 'required|string',
+        'ser_no.*' => 'nullable|string',
+        'status.*' => 'nullable|string',
+    ]);
+
+    // Loop through each entry and save it
+    foreach ($request->position as $key => $value) {
         Gingoog::create([
-            'position' => $request->position,
-            'name' => $request->name,
-            'date' => $request->date,
-            'quantity' => $request->quantity ?? 0, // Default to 0 if NULL
-            'description' => $request->description ?? 'N/A',
-            'ser_no' => $request->ser_no ?? 'N/A',
-            'status' => $request->status ?? 'Unknown',
+            'position' => $request->position[$key],
+            'name' => $request->name[$key],
+            'date' => $request->date[$key],
+            'quantity' => $request->quantity[$key] ?? 0,
+            'description' => $request->description[$key],
+            'ser_no' => $request->ser_no[$key] ?? null,
+            'status' => $request->status[$key] ?? 'N/A',
         ]);
-    
-        return redirect()->route('gingoogs.records')->with('success', 'Record added successfully!');
     }
+
+    return redirect()->route('gingoogs.records')->with('success', 'Records added successfully!');
+}
     // Show a single record
     public function show($id)
     {
@@ -123,9 +126,9 @@ class GingoogController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
-    
+
         Excel::import(new GingoogImport, $request->file('file'));
-    
+
         return back()->with('success', 'Records imported successfully!');
     }
     //Delete all

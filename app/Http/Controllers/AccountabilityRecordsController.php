@@ -43,35 +43,34 @@ class AccountabilityRecordsController extends Controller
         return view('accountability.accountability_records', compact('records'));
     }
 
-    public function store(Request $request)
-    {
-        // Validate the input
-        $request->validate([
-            'id_number' => 'required|string',
-            'name' => 'required|string',
-            'date' => 'required|date',
-            'quantity' => 'nullable|integer', // Allow quantity to be nullable but must be an integer if provided
-        ]);
+   public function store(Request $request)
+{
+    // Validate the input
+    $request->validate([
+        'id_number.*' => 'required|string',
+        'name.*' => 'required|string',
+        'date.*' => 'required|date',
+        'quantity.*' => 'nullable|integer',
+        'description.*' => 'required|string',
+        'ser_no.*' => 'nullable|string',
+        'status.*' => 'nullable|string',
+    ]);
 
-        // Assign "N/A" if status is missing
-        $status = $request->filled('status') ? $request->status : 'N/A';
-
-        // Assign 0 if quantity is missing
-        $quantity = $request->filled('quantity') ? $request->quantity : 0;
-
-        // Insert into database
+    // Loop through each record
+    foreach ($request->id_number as $key => $id_number) {
         AccountabilityRecord::create([
-            'id_number' => $request->id_number,
-            'name' => $request->name,
-            'date' => $request->date,
-            'quantity' => $quantity,
-            'description' => $request->description,
-            'ser_no' => $request->ser_no,
-            'status' => $status,
+            'id_number' => $id_number,
+            'name' => $request->name[$key],
+            'date' => $request->date[$key],
+            'quantity' => $request->quantity[$key] ?? 0, // Assign 0 if missing
+            'description' => $request->description[$key],
+            'ser_no' => $request->ser_no[$key] ?? null,
+            'status' => $request->status[$key] ?? 'N/A', // Assign "N/A" if missing
         ]);
-
-        return redirect()->route('accountability.accountability_records')->with('success', 'Record added successfully!');
     }
+
+    return redirect()->route('accountability.accountability_records')->with('success', 'Records added successfully!');
+}
 
     public function edit($id)
     {

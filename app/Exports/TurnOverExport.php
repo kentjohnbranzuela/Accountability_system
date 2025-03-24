@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class TurnOverExport implements FromCollection, WithHeadings
 {
+
     public function collection()
     {
         return TurnOver::all()->map(function ($turnover) {

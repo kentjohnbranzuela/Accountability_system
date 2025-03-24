@@ -18,30 +18,43 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-    
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // Regenerate session to prevent fixation
-            session(['user_id' => Auth::id()]); // Ensure user_id is stored in session
-            session()->save(); // Force session to save
-    
-            // If "Remember Me" is checked, store the email in a cookie
-            if ($request->has('remember')) {
-                Cookie::queue('email', $request->email, 43200); // Store for 30 days
-            } else {
-                Cookie::queue(Cookie::forget('email')); // Remove email if unchecked
-            }
-    
-            return redirect()->intended('/dashboard')->with('success', 'Login successful.');
+   public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+        if (!$user) {
+            dd('Auth::user() is null. Check session configuration.');
         }
-    
-        return back()->withErrors(['email' => 'Invalid login credentials.']);
+
+        // ✅ Save user role and email in session
+        session([
+            'user_id' => $user->id,
+            'role' => $user->role,
+            'email' => $user->email,  // <-- Para magamit sa logs
+        ]);
+        session()->save();
+
+        Log::info("User Logged In:", ['user_id' => $user->id, 'role' => $user->role]);
+
+        // Role-based redirection
+        if ($user->role === 'technician') {
+            return redirect()->route('toolsrequest.records')->with('success', 'Login successful.');
+        } elseif ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard')->with('success', 'Login successful.');
+        }
+
+        return redirect('/')->with('success', 'Login successful.');
     }
+
+    return back()->withErrors(['email' => 'Invalid login credentials.']);
+}
     public function accountInfo()
 {
     $user = Auth::user(); // Get the currently authenticated user

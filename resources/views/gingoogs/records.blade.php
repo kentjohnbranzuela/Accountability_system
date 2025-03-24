@@ -233,24 +233,24 @@ document.addEventListener("DOMContentLoaded", function () {
 };
 
     // ✅ Delete Single Record with SweetAlert
-    document.querySelectorAll(".deleteform").forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "This record will be permanently deleted!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.closest("form").submit();
-                }
-            });
+   document.querySelectorAll(".deleteButton").forEach(button => {
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This record will be permanently deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.closest("form").submit();
+            }
         });
     });
+});
 
     let deleteButton = document.getElementById("Delete");
     let deleteForm = document.getElementById("deleteForm");
