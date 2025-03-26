@@ -80,7 +80,8 @@ Route::middleware([SessionAuth::class])->group(function () {
     Route::delete('/turnover/delete-all', [TurnOverController::class, 'deleteAll'])->name('turnover.deleteAll');
 Route::get('/turnover/records', [TurnOverController::class, 'records'])->name('turnover.records');
 route::delete('/turnover-destroy', [TurnOverController::class, 'destroy'])->name('turnover.destroy');
-Route::post('/turnover-update', [TurnOverController::class, 'updateAccount'])->name('turnover.update');
+    Route::get('/turnover/{id}/edit', [TurnOverController::class, 'edit'])->name('turnover.edit');
+    Route::put('/turnover/{id}', [TurnOverController::class, 'update'])->name('turnover.update');
 Route::get('/turnover/create', [TurnOverController::class, 'create'])->name('turnover.create');
 Route::post('/turnover/store', [TurnOverController::class, 'store'])->name('turnover.store');
 Route::get('/export-turnovers', [TurnOverController::class, 'exportExcel'])->name('export.turnovers');
@@ -107,17 +108,17 @@ Route::put('/resign/{resignRecord}', [ResignRecordController::class, 'update'])-
 Route::get('/resign/check-data', [ResignRecordController::class, 'checkData'])->name('resign.checkData');
 Route::get('/export-resign', [ResignRecordController::class, 'exportExcel'])->name('export.resign');
 //Tools Request
-Route::get('/toolsrequest/records', [ToolsRequestController::class, 'records'])->name('toolsrequest.records');
-Route::post('/toolsrequest/import', [ToolsRequestController::class, 'importExcel'])->name('toolsrequest.import');
-Route::delete('/toolsrequest/delete-all', [ToolsRequestController::class, 'deleteAll'])->name('toolsrequest.deleteAll');
-Route::delete('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'destroy'])
-    ->name('toolsrequest.destroy');
-Route::get('/toolsrequest/create', [ToolsRequestController::class, 'create'])->name('toolsrequest.create');
-Route::post('/toolsrequest/store', [ToolsRequestController::class, 'store'])->name('toolsrequest.store');
-Route::get('/toolsrequest/{toolsrequest}/edit', [ToolsRequestController::class, 'edit'])->name('toolsrequest.edit');
-Route::put('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'update'])->name('toolsrequest.update');
-Route::get('/toolsrequest/check-data', [ToolsRequestController::class, 'checkData'])->name('toolsrequest.checkData');
-Route::get('/export-toolsrequests', [ToolsRequestController::class, 'exportExcel'])->name('export.toolsrequests');});
+        Route::get('/toolsrequest/records', [ToolsRequestController::class, 'records'])->name('toolsrequest.records');
+        Route::post('/toolsrequest/import', [ToolsRequestController::class, 'importExcel'])->name('toolsrequest.import');
+        Route::delete('/toolsrequest/delete-all', [ToolsRequestController::class, 'deleteAll'])->name('toolsrequest.deleteAll');
+        Route::delete('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'destroy'])
+            ->name('toolsrequest.destroy');
+        Route::get('/toolsrequest/create', [ToolsRequestController::class, 'create'])->name('toolsrequest.create');
+        Route::post('/toolsrequest/store', [ToolsRequestController::class, 'store'])->name('toolsrequest.store');
+        Route::get('/toolsrequest/{toolsrequest}/edit', [ToolsRequestController::class, 'edit'])->name('toolsrequest.edit');
+        Route::put('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'update'])->name('toolsrequest.update');
+        Route::get('/toolsrequest/check-data', [ToolsRequestController::class, 'checkData'])->name('toolsrequest.checkData');
+        Route::get('/export-toolsrequests', [ToolsRequestController::class, 'exportExcel'])->name('export.toolsrequests');});
 
 
 

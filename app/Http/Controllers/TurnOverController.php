@@ -17,14 +17,16 @@ class TurnOverController extends Controller
    public function store(Request $request)
 {
     $validatedData = $request->validate([
-        'position' => 'nullable|string',
-        'name' => 'required|string',
-        'date' => 'required|date',
-        'quantity' => 'nullable|integer',
-        'description' => 'required|string',
-        'ser_no' => 'nullable|string',
-        'status' => 'nullable|string',
+        'position.*' => 'nullable|string',
+        'name.*' => 'required|string',
+        'date.*' => 'required|date',
+        'quantity.*' => 'nullable|integer',
+        'description.*' => 'required|string',
+        'ser_no.*' => 'nullable|string',
+        'status.*' => 'nullable|string',
     ]);
+
+    $records = [];
 
     // Set default values if fields are empty
     $validatedData['quantity'] = $validatedData['quantity'] ?? 0;
@@ -32,10 +34,26 @@ class TurnOverController extends Controller
     $validatedData['status'] = $validatedData['status'] ?? 'N/A';
 
     // Save to database
-    TurnOver::create($validatedData);
+    foreach ($request->name as $key => $name) {
+        $records[] = [
+            'position' => $request->position[$key] ?? null,
+            'name' => $name,
+            'date' => $request->date[$key],
+            'quantity' => $request->quantity[$key] ?? 0,
+            'description' => $request->description[$key],
+            'ser_no' => $request->ser_no[$key] ?? 'N/A',
+            'status' => $request->status[$key] ?? 'N/A',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
 
-    return redirect()->route('turnover.records')->with('success', 'Turn Over record added.');
-}   public function deleteAll()
+    // Insert all records at once for better performance
+    TurnOver::insert($records);
+
+    return redirect()->route('turnover.records')->with('success', 'Turn Over records added successfully.');
+}
+public function deleteAll()
 {
     TurnOver::truncate();
     return redirect()->route('turnover.records')->with('success', 'All Turn Over records deleted.');
@@ -73,7 +91,7 @@ public function updateAccount(Request $request, $id)
     $turnover = TurnOver::findOrFail($id);
     $turnover->update($request->all());
 
-    return redirect()->route('turnover.index')->with('success', 'Turn Over record updated.');
+    return redirect()->route('turnover.records')->with('success', 'Turn Over record updated.');
 }
 // Export Excel
 public function exportExcel()
@@ -109,6 +127,7 @@ public function destroy($id)
         $record = TurnOver::findOrFail($id);
         return view('turnover.edit', compact('record'));
     }
+
     public function update(Request $request, $id)
     {
         $record = TurnOver::findOrFail($id);
