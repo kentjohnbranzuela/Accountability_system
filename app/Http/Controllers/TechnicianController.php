@@ -20,7 +20,7 @@ class TechnicianController extends Controller
     public function records(Request $request)
     {
         $query = Technician::query();
-    
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -31,10 +31,10 @@ class TechnicianController extends Controller
                   ->orWhere('status', 'LIKE', "%$search%");
             });
         }
-    
+
         // Fetch records
         $technicians = $query->paginate(19);
-    
+
         // Find duplicate serial numbers
         $duplicateSerNos = Technician::select('ser_no')
     ->whereNotNull('ser_no')
@@ -46,32 +46,36 @@ class TechnicianController extends Controller
 return view('technician.records', compact('technicians', 'duplicateSerNos'));
     }
     public function store(Request $request)
-    {
-        $request->validate([
-            'Position' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'date' => 'required|date',
-            'quantity' => 'nullable|integer|min:0', // Allow integer values, but nullable
-            'ser_no' => 'nullable|string|max:255',
-            'status' => 'nullable|string|max:255',
-        ]);
-    
-        // Ensure default values are assigned if input is missing
-        $data = [
-            'position' => $request->input('Position'),
-            'name' => $request->input('name'),
-            'date' => $request->input('date'),
-            'quantity' => $request->filled('quantity') ? $request->input('quantity') : 0, // If provided, use it; otherwise, default to 0
-            'description' => $request->input('description', ''), // If empty, store empty string
-            'ser_no' => $request->filled('ser_no') ? $request->input('ser_no') : 'N/A', // If provided, use it; otherwise, default to "N/A"
-            'status' => $request->filled('status') ? $request->input('status') : 'N/A', // If provided, use it; otherwise, default to "N/A"
+{
+    $request->validate([
+        'position.*' => 'required|string|max:255',
+        'name.*' => 'required|string|max:255',
+        'date.*' => 'required|date',
+        'quantity.*' => 'nullable|integer|min:0',
+        'ser_no.*' => 'nullable|string|max:255',
+        'status.*' => 'nullable|string|max:255',
+    ]);
+
+    $technicians = [];
+
+    foreach ($request->position as $key => $position) {
+        $technicians[] = [
+            'position' => $position,
+            'name' => $request->name[$key],
+            'date' => $request->date[$key],
+            'quantity' => $request->quantity[$key] ?? 0,
+            'description' => $request->description[$key] ?? '',
+            'ser_no' => $request->ser_no[$key] ?? 'N/A',
+            'status' => $request->status[$key] ?? 'N/A',
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
-    
-        Technician::create($data);
-    
-        return back()->with('success', 'Technician record saved!');
     }
-    
+
+    Technician::insert($technicians); // Bulk insert for better performance
+
+    return back()->with('success', 'Technician records saved successfully!');
+}
     public function edit($id)
     {
         $record = Technician::findOrFail($id);

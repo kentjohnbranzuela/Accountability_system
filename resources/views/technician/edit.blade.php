@@ -9,8 +9,7 @@
 
     <div class="card p-3 shadow-sm">
         <form action="{{ route('technician.update', $record->id) }}" method="POST" class="row g-3">
-        <form action="{{ route('accountability.update', $record->id) }}" method="POST" class="row g-3">
-            @csrf
+             @csrf
             @method('PUT')
 
             <div class="col-md-3">

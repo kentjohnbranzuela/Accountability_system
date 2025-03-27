@@ -170,6 +170,7 @@ class ToolsRequestController extends Controller
         return redirect()->route('toolsrequest.records')->with('success', 'Record updated successfully!');
     }
 
+
     public function show($id)
 {
     $technician = User::where('role', 'technician')->findOrFail($id);

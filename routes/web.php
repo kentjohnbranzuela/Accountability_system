@@ -47,7 +47,9 @@ Route::middleware([SessionAuth::class])->group(function () {
     //Technician
     Route::delete('/technician/delete-all', [TechnicianController::class, 'deleteAll'])->name('technician.deleteAll');
     Route::get('/technician/records', [TechnicianController::class, 'records'])->name('technician.records');
-    Route::post('/technician-update', [TechnicianController::class, 'updateAccount'])->name('technician.update');
+    Route::delete('/technician/{id}', [TechnicianController::class, 'destroy'])->name('technician.destroy');
+        Route::get('/technician/{id}/edit', [TechnicianController::class, 'edit'])->name('technician.edit');
+Route::put('/technician-update/{id}', [TechnicianController::class, 'update'])->name('technician.update');
     Route::get('/technician/create', [TechnicianController::class, 'create'])->name('technician.create');
     Route::post('/technician/store', [TechnicianController::class, 'store'])->name('technician.store');
     Route::get('/export-technicians', [TechnicianController::class, 'exportExcel'])->name('export.technicians');
