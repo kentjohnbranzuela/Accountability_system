@@ -15,6 +15,8 @@
                 'TURN-OVER LIST' => route('turnover.records'),
                 'AWOL LIST' => route('awol.records'),
                 'RESIGN-LIST' => route('resign.records'),
+                'TOOLS REQUEST' => route('toolsrequest.records'),
+
             ];
             $route = $routes[$category] ?? '#'; // Default to '#' if no route exists
         @endphp
@@ -63,7 +65,7 @@
     text-decoration: none;
     background-color: white;
     border: 1px solid #d1d5db;
-    border-radius: 10px;
+    border-radius: 40px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 16px;
     text-align: center;
@@ -86,6 +88,7 @@
 .grid-item:nth-child(5) { animation-delay: 0.5s; }
 .grid-item:nth-child(6) { animation-delay: 0.6s; }
 .grid-item:nth-child(7) { animation-delay: 0.7s; }
+.grid-item:nth-child(8) { animation-delay: 0.8s; }
 .grid-item:nth-child(1) { background-color: #fef3c7; } /* Light Yellow */
 .grid-item:nth-child(2) { background-color: #d1fae5; } /* Light Green */
 .grid-item:nth-child(3) { background-color: #cecece; } /* Light Blue */
@@ -93,12 +96,15 @@
 .grid-item:nth-child(5) { background-color: #d9f0f4; } /* Light Orange */
 .grid-item:nth-child(6) { background-color: #c7d2fe; } /* Light Purple */
 .grid-item:nth-child(7) { background-color: #f2e8e8; } /* Light Red */
+.grid-item:nth-child(8) { background-color: #ffe9e9; } /* Light Red */
+
 
 /* Hover Effect - Scale Up */
 .grid-item:hover {
     transform: scale(1.1); /* Mas malaki */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* Mas intense ang shadow */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    scale: 1.1;
 }
 
 /* Category Styling */

@@ -120,7 +120,8 @@ Route::get('/export-resign', [ResignRecordController::class, 'exportExcel'])->na
         Route::get('/toolsrequest/{toolsrequest}/edit', [ToolsRequestController::class, 'edit'])->name('toolsrequest.edit');
         Route::put('/toolsrequest/{toolsrequest}', [ToolsRequestController::class, 'update'])->name('toolsrequest.update');
         Route::get('/toolsrequest/check-data', [ToolsRequestController::class, 'checkData'])->name('toolsrequest.checkData');
-        Route::get('/export-toolsrequests', [ToolsRequestController::class, 'exportExcel'])->name('export.toolsrequests');});
+        Route::get('/export-toolsrequests', [ToolsRequestController::class, 'exportExcel'])->name('export.toolsrequests');
+    });
 
 
 

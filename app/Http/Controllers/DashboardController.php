@@ -10,6 +10,7 @@ use App\Models\Cdo;
 use App\Models\TurnOver;
 use App\Models\AwolRecord;
 use App\Models\ResignRecord;
+use App\Models\ToolsRequest;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -41,10 +42,11 @@ class DashboardController extends Controller
         'BRO' => AccountabilityRecord::class,
         'Gingoog' => Gingoog::class,
         'Technician' => Technician::class,
-        'BC-CDO LIST' => Cdo::class,
-        'TURN-OVER LIST' => TurnOver::class,
-        'AWOL LIST' => AwolRecord::class,
-        'RESIGN-LIST' => ResignRecord::class,
+        'BC-CDO' => Cdo::class,
+        'Turn over' => TurnOver::class,
+        'AWOL' => AwolRecord::class,
+        'RESIGN' => ResignRecord::class,
+        'TOOLS REQUEST' => ToolsRequest::class,
     ];
 
     // Count per category (for dashboard boxes)

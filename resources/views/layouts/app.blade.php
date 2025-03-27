@@ -228,7 +228,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="broListToggle">
-                    <i class="fas fa-folder"></i> BRO LIST
+                    <i class="fas fa-folder"></i> BRO
                 </a>
                 <ul class="collapse list-unstyled" id="broListMenu">
                     <li><a href="{{ route('accountability.accountability_records') }}" class="nav-link"><i class="fa-solid fa-table"></i>BRO Records</a></li>
@@ -238,7 +238,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="techListToggle">
-                    <i class="fa-solid fa-screwdriver-wrench"></i> TECH LIST
+                    <i class="fa-solid fa-screwdriver-wrench"></i> TECHNICIAN
                 </a>
                 <ul class="collapse list-unstyled" id="techListMenu">
                     <li><a href="{{ route('technician.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>TECH Records</a></li>
@@ -248,7 +248,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="bcGingoogToggle">
-                    <i class="fa-solid fa-location-dot"></i>  BC-GINGOOG LIST
+                    <i class="fa-solid fa-location-dot"></i>  BC-GINGOOG
                 </a>
                 <ul class="collapse list-unstyled" id="bcGingoogMenu">
                     <li><a href="{{ route('gingoogs.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>GINGOOG Records</a></li>
@@ -258,7 +258,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="bcCdoToggle">
-                    <i class="fa-solid fa-location-dot"></i> BC-CDO LIST
+                    <i class="fa-solid fa-location-dot"></i> BC-CDO
                 </a>
                 <ul class="collapse list-unstyled" id="bcCdoMenu">
                     <li><a href="{{ route('cdos.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>CDO Records</a></li>
@@ -268,7 +268,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="turnOverToggle">
-                    <i class="fa-solid fa-rotate"></i> TURN-OVER LIST
+                    <i class="fa-solid fa-rotate"></i> TURN-OVER
                 </a>
                 <ul class="collapse list-unstyled" id="turnOverMenu">
                     <li><a href="{{ route('turnover.records') }}" class="nav-link"><i class="fa-solid fa-rotate"></i>T-O Records</a></li>
@@ -278,7 +278,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="awolToggle">
-                    <i class="fas fa-user"></i> AWOL LIST
+                    <i class="fas fa-user"></i> AWOL
                 </a>
                 <ul class="collapse list-unstyled" id="awolMenu">
                     <li><a href="{{ route('awol.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>AWOL Records</a></li>
@@ -288,7 +288,7 @@
 
             <li class="nav-item">
                 <a href="#" class="nav-link dropdown-toggle" id="resignToggle">
-                    <i class="fas fa-user-minus"></i> RESIGN LIST
+                    <i class="fas fa-user-minus"></i> RESIGN
                 </a>
                 <ul class="collapse list-unstyled" id="resignMenu">
                     <li><a href="{{ route('resign.records') }}" class="nav-link"><i class="fa-solid fa-table"></i>RESIGN Records</a></li>
