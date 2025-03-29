@@ -81,7 +81,7 @@ Route::put('/technician-update/{id}', [TechnicianController::class, 'update'])->
     Route::post('/import-turnovers', [TurnOverController::class, 'importExcel'])->name('import.turnovers');
     Route::delete('/turnover/delete-all', [TurnOverController::class, 'deleteAll'])->name('turnover.deleteAll');
 Route::get('/turnover/records', [TurnOverController::class, 'records'])->name('turnover.records');
-route::delete('/turnover-destroy', [TurnOverController::class, 'destroy'])->name('turnover.destroy');
+Route::delete('/turnover-destroy/{id}', [TurnOverController::class, 'destroy'])->name('turnover.destroy');
     Route::get('/turnover/{id}/edit', [TurnOverController::class, 'edit'])->name('turnover.edit');
     Route::put('/turnover/{id}', [TurnOverController::class, 'update'])->name('turnover.update');
 Route::get('/turnover/create', [TurnOverController::class, 'create'])->name('turnover.create');

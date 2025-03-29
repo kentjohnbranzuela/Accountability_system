@@ -106,12 +106,12 @@ label[for="remember"] {
 
     <div class="mb-3 text-start">
     <label for="email" class="form-label text-light">Email address</label>
-    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Cookie::get('email')) }}" required>
+    <input type="email"  class="form-control" placeholder="Email address." id="email" name="email" value="{{ old('email', Cookie::get('email')) }}" required>
 </div>
 <div class="mb-3 text-start position-relative">
     <label for="password" class="form-label">Password</label>
     <div class="input-group">
-        <input type="password" class="form-control" id="password" name="password" required>
+        <input type="password" class="form-control" id="password" placeholder="Password." name="password" required>
         <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
             👁️
         </span>

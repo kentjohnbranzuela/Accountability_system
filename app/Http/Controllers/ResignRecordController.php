@@ -15,27 +15,45 @@ class ResignRecordController extends Controller
      * Store a newly created record.
      */
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'position' => 'nullable|string',
-            'name' => 'required|string',
-            'date' => 'required|date',
-            'quantity' => 'nullable|integer',
-            'description' => 'required|string',
-            'ser_no' => 'nullable|string',
-            'status' => 'nullable|string',
-        ]);
+{
+    // Validate input fields
+    $validatedData = $request->validate([
+        'position.*' => 'nullable|string|max:255',
+        'name.*' => 'required|string|max:255',
+        'date.*' => 'nullable|date', // ✅ Made optional
+        'quantity.*' => 'nullable|integer|min:0',
+        'description.*' => 'required|string|max:255',
+        'ser_no.*' => 'nullable|string|max:255',
+        'status.*' => 'nullable|string|max:255',
+    ]);
 
-        // Set default values if fields are empty
-        $validatedData['quantity'] = $validatedData['quantity'] ?? 0;
-        $validatedData['ser_no'] = $validatedData['ser_no'] ?? 'N/A';
-        $validatedData['status'] = $validatedData['status'] ?? 'N/A';
-
-        // Save to database
-        ResignRecord::create($validatedData);
-
-        return redirect()->route('resign.records')->with('success', 'Resign record added.');
+    // Ensure there are records to process
+    if (!$request->has('name')) {
+        return back()->with('error', 'No records to save.');
     }
+
+    // Prepare records for bulk insert
+    $records = [];
+    foreach ($request->name as $key => $name) {
+        $records[] = [
+            'position' => $request->position[$key] ?? null,
+            'name' => $name,
+            'date' => !empty($request->date[$key]) ? $request->date[$key] : null, // ✅ Save NULL if empty
+            'quantity' => $request->quantity[$key] ?? 0,
+            'description' => $request->description[$key] ?? '',
+            'ser_no' => $request->ser_no[$key] ?? 'N/A',
+            'status' => $request->status[$key] ?? 'N/A',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+
+    // Bulk insert for efficiency
+    ResignRecord::insert($records);
+
+    return redirect()->route('resign.records')->with('success', 'Resign records added successfully!');
+}
+
 
     /**
      * Delete all records.

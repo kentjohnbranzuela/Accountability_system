@@ -11,10 +11,10 @@
                 'BRO' => route('accountability.accountability_records'),
                 'Gingoog' => route('gingoogs.records'),
                 'Technician' => route('technician.records'),
-                'BC-CDO LIST' => route('cdos.records'),
-                'TURN-OVER LIST' => route('turnover.records'),
-                'AWOL LIST' => route('awol.records'),
-                'RESIGN-LIST' => route('resign.records'),
+                'BC-CDO' => route('cdos.records'),
+                'Turn over' => route('turnover.records'),
+                'AWOL' => route('awol.records'),
+                'RESIGN' => route('resign.records'),
                 'TOOLS REQUEST' => route('toolsrequest.records'),
 
             ];
