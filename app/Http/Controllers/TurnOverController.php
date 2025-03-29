@@ -69,8 +69,7 @@ public function deleteAll()
                 $q->where('position', 'LIKE', "%$search%")
                   ->orWhere('name', 'LIKE', "%$search%")
                   ->orWhere('description', 'LIKE', "%$search%")
-                  ->orWhere('ser_no', 'LIKE', "%$search%")
-                  ->orWhere('status', 'LIKE', "%$search%");
+                  ->orWhere('ser_no', 'LIKE', "%$search%");
             });
         }
 

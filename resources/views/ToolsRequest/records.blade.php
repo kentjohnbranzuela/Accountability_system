@@ -330,7 +330,30 @@
             };
             return today.toLocaleDateString(undefined, options);
         }
+        document.addEventListener("DOMContentLoaded", function () {
+    let tableRows = document.querySelectorAll("#toolsrequestTable tbody tr");
 
+    tableRows.forEach(row => {
+        row.addEventListener("click", function (event) {
+            if (event.target.tagName === "INPUT" || event.target.tagName === "BUTTON" || event.target.tagName === "A" || event.target.tagName === "I") {
+                return; // Prevent clicking on checkboxes, buttons, or links
+            }
+
+            let checkbox = this.querySelector(".selectRow");
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    });
+
+    // Select All Functionality
+    document.getElementById("selectAll").addEventListener("change", function () {
+        let checkboxes = document.querySelectorAll(".selectRow");
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+});
         function printSelectedTable() {
             let selectedRows = document.querySelectorAll('.selectRow:checked');
 

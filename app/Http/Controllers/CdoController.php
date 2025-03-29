@@ -20,21 +20,20 @@ class CdoController extends Controller
     public function records(Request $request)
     {
         $query = Cdo::query();
-    
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('position', 'LIKE', "%$search%")
                   ->orWhere('name', 'LIKE', "%$search%")
                   ->orWhere('description', 'LIKE', "%$search%")
-                  ->orWhere('ser_no', 'LIKE', "%$search%")
-                  ->orWhere('status', 'LIKE', "%$search%");
+                  ->orWhere('ser_no', 'LIKE', "%$search%");
             });
         }
-    
+
         // Fetch records with pagination
         $cdos = $query->paginate(19);
-    
+
         // Find duplicate serial numbers
         $duplicateSerNos = Cdo::select('ser_no')
             ->whereNotNull('ser_no')
@@ -49,27 +48,29 @@ class CdoController extends Controller
     public function store(Request $request)
 {
     $validatedData = $request->validate([
-        'position' => 'required|string',
-        'name' => 'required|string',
-        'date' => 'nullable|date',
-        'quantity' => 'nullable|integer',
-        'description' => 'nullable|string',
-        'ser_no' => 'nullable|string',
-        'status' => 'nullable|string',
+        'position.*' => 'required|string',
+        'name.*' => 'required|string',
+        'date.*' => 'nullable|date',
+        'quantity.*' => 'nullable|integer',
+        'description.*' => 'nullable|string',
+        'ser_no.*' => 'nullable|string',
+        'status.*' => 'nullable|string',
     ]);
 
-    // Assign "N/A" if any field is empty
-    $cdo = Cdo::create([
-        'position' => $request->position ?? 'N/A',
-        'name' => $request->name ?? 'N/A',
-        'date' => $request->date ?? now(), // Defaults to today if empty
-        'quantity' => $request->quantity ?? 0, // Default to 0 if empty
-        'description' => $request->description ?? 'N/A',
-        'ser_no' => $request->ser_no ?? 'N/A',
-        'status' => $request->status ?? 'N/A',
-    ]);
+    // Loop through the arrays and insert multiple records
+    foreach ($request->position as $index => $position) {
+        Cdo::create([
+            'position' => $position ?? 'N/A',
+            'name' => $request->name[$index] ?? 'N/A',
+            'date' => $request->date[$index] ?? now(),
+            'quantity' => $request->quantity[$index] ?? 0,
+            'description' => $request->description[$index] ?? 'N/A',
+            'ser_no' => $request->ser_no[$index] ?? 'N/A',
+            'status' => $request->status[$index] ?? 'N/A',
+        ]);
+    }
 
-    return redirect()->route('cdos.records')->with('success', 'Record added successfully!');
+    return redirect()->route('cdos.records')->with('success', 'Records added successfully!');
 }
 
     public function edit($id)

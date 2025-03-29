@@ -27,8 +27,7 @@ class AccountabilityRecordsController extends Controller
                 $q->where('id_number', 'LIKE', "%$search%")
                   ->orWhere('name', 'LIKE', "%$search%")
                   ->orWhere('description', 'LIKE', "%$search%")
-                  ->orWhere('ser_no', 'LIKE', "%$search%")
-                  ->orWhere('status', 'LIKE', "%$search%");
+                  ->orWhere('ser_no', 'LIKE', "%$search%");
             });
         }
 

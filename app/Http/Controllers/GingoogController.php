@@ -27,8 +27,7 @@ class GingoogController extends Controller
                 ->orWhere('date', 'like', "%{$search}%")
                 ->orWhere('quantity', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")
-                ->orWhere('ser_no', 'like', "%{$search}%")
-                ->orWhere('status', 'like', "%{$search}%");
+                ->orWhere('ser_no', 'like', "%{$search}%");
         });
     }
 
