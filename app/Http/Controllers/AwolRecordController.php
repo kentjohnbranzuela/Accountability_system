@@ -24,7 +24,7 @@ class AwolRecordController extends Controller {
         }
 
         // Fetch records with pagination
-        $awols = $query->paginate(19);
+        $awols = $query->paginate(40);
 
         // Find duplicate serial numbers
         $duplicateSerNos = AwolRecord::select('ser_no')
@@ -45,28 +45,31 @@ class AwolRecordController extends Controller {
     public function store(Request $request)
 {
     $validatedData = $request->validate([
-        'position' => 'required|string',
-        'name' => 'required|string',
-        'date' => 'nullable|date',
-        'quantity' => 'nullable|integer',
-        'description' => 'nullable|string',
-        'ser_no' => 'nullable|string',
-        'status' => 'nullable|string',
+        'position.*' => 'required|string',
+        'name.*' => 'required|string',
+        'date.*' => 'nullable|date',
+        'quantity.*' => 'nullable|integer',
+        'description.*' => 'nullable|string',
+        'ser_no.*' => 'nullable|string',
+        'status.*' => 'nullable|string',
     ]);
 
-    // Assign "N/A" if any field is empty
-    $awol = AwolRecord::create([
-        'position' => $request->position ?? 'N/A',
-        'name' => $request->name ?? 'N/A',
-        'date' => $request->date ?? now(), // Defaults to today if empty
-        'quantity' => $request->quantity ?? 0, // Default to 0 if empty
-        'description' => $request->description ?? 'N/A',
-        'ser_no' => $request->ser_no ?? 'N/A',
-        'status' => $request->status ?? 'N/A',
-    ]);
+    // Loop through the arrays and insert multiple records
+    foreach ($request->position as $index => $position) {
+        AwolRecord::create([
+            'position' => $position ?? 'N/A',
+            'name' => $request->name[$index] ?? 'N/A',
+            'date' => $request->date[$index] ?? now(),
+            'quantity' => $request->quantity[$index] ?? 0,
+            'description' => $request->description[$index] ?? 'N/A',
+            'ser_no' => $request->ser_no[$index] ?? 'N/A',
+            'status' => $request->status[$index] ?? 'N/A',
+        ]);
+    }
 
-    return redirect()->route('awol.records')->with('success', 'Record added successfully!');
+    return redirect()->route('awol.records')->with('success', 'Records added successfully!');
 }
+
 
     public function show(AwolRecord $awolRecord) {
     return view('awol.show', compact('awolRecord')); // Ensure 'awol.show' view exists
@@ -91,9 +94,12 @@ class AwolRecordController extends Controller {
         return redirect()->route('awol.records')->with('success', 'Record updated successfully!');
     }
 
-    public function destroy(AwolRecord $awol) {
-        $awol->delete();
-        return redirect()->route('awol.records')->with('success', 'AWOL record deleted.');
+    public function destroy($id)
+    {
+        $record = AwolRecord::findOrFail($id);
+        $record->delete();
+
+        return redirect()->route('awol.records')->with('success', 'Record deleted successfully!');
     }
      public function deleteAll()
 {
